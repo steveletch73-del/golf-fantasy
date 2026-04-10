@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<title>Masters Fantasy 2026</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --green:#1a5c35;--green-dark:#0d3820;
+  --gold:#b8963e;--gold-light:#f7f0dc;
+  --under:#1a6b3a;--under-bg:#e5f3ec;
+  --over:#b83232;--over-bg:#fdecea;
+  --text:#1c1c1c;--text-mid:#5a5a5a;--text-soft:#999;
+  --border:#e2e2e2;--border-soft:#efefef;
+  --bg:#f4f2ed;--white:#fff;
+  --radius:14px;--radius-sm:8px;
+}
+body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased}
+
+.hd{background:var(--green-dark);padding:18px 16px 0;text-align:center;position:sticky;top:0;z-index:100;box-shadow:0 2px 16px rgba(0,0,0,.3)}
+.hd-inner{display:flex;align-items:center;justify-content:center;gap:9px;margin-bottom:3px}
+.hd h1{font-family:'EB Garamond',Georgia,serif;font-size:21px;font-weight:600;color:var(--gold-light)}
+.hd-sub{font-size:11px;color:rgba(255,255,255,.45);margin-bottom:10px}
+
+.tabs{display:flex;border-top:1px solid rgba(255,255,255,.08)}
+.tab{flex:1;padding:11px 4px;font-size:13px;font-weight:500;font-family:'DM Sans',sans-serif;background:transparent;border:none;border-bottom:3px solid transparent;color:rgba(255,255,255,.45);cursor:pointer;transition:all .2s}
+.tab.on{color:var(--gold-light);border-bottom-color:var(--gold)}
+
+.main{padding:14px 12px 40px;max-width:500px;margin:0 auto}
+.sec{display:none}.sec.on{display:block}
+
+.status-bar{display:flex;align-items:center;gap:8px;background:var(--white);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 13px;margin-bottom:12px}
+.dot{width:8px;height:8px;border-radius:50%;background:#ccc;flex-shrink:0;transition:background .3s}
+.dot.live{background:#4caf50;animation:pulse 1.8s infinite}
+.dot.err{background:#e74c3c}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+.status-text{font-size:12px;color:var(--text-mid);flex:1;line-height:1.4}
+.status-text b{color:var(--text);font-weight:600}
+.refresh-btn{font-size:12px;font-family:'DM Sans',sans-serif;padding:5px 12px;background:var(--white);border:1px solid var(--border);border-radius:20px;cursor:pointer;color:var(--text-mid);font-weight:500;flex-shrink:0;transition:all .15s}
+.refresh-btn:hover{border-color:var(--green);color:var(--green)}
+.refresh-btn:disabled{opacity:.5;cursor:not-allowed}
+.spin{display:inline-block;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.skeleton{background:linear-gradient(90deg,#e8e8e8 25%,#f5f5f5 50%,#e8e8e8 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;border-radius:6px;height:16px;margin:8px 0}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+.lb{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:0 1px 6px rgba(0,0,0,.05)}
+.lb-row{display:grid;grid-template-columns:38px 1fr auto;align-items:center;gap:6px;padding:13px 14px;border-bottom:1px solid var(--border-soft);cursor:pointer;transition:background .15s}
+.lb-row:last-child{border-bottom:none}
+.lb-row:active{background:#f5f5f5}
+.lb-row.g1{background:linear-gradient(135deg,#fdf7e8,#faefc5)}
+.lb-row.g2{background:#f9f9f9}
+.lb-row.g3{background:#f7f3ee}
+.lb-medal{font-size:20px;text-align:center}
+.lb-numrank{font-size:14px;font-weight:600;color:var(--text-soft);text-align:center}
+.lb-name{font-size:15px;font-weight:600;color:var(--text)}
+.lb-picks{font-size:11px;color:var(--text-soft);margin-top:2px;line-height:1.5}
+.lb-score{font-family:'EB Garamond',Georgia,serif;font-size:26px;font-weight:600;text-align:right;min-width:46px}
+.u{color:var(--under)}.o{color:var(--over)}.e{color:var(--text-mid)}
+
+.tc{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:11px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.04)}
+.tc-hd{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:var(--under-bg);border-bottom:1px solid #c5e3d0}
+.tc-name{font-size:15px;font-weight:600;color:var(--green-dark)}
+.badge{font-family:'EB Garamond',Georgia,serif;font-size:20px;font-weight:600;padding:3px 12px;border-radius:20px}
+.b-u{background:var(--under-bg);color:var(--under)}
+.b-o{background:var(--over-bg);color:var(--over)}
+.b-e{background:#f0f0f0;color:var(--text-mid)}
+.pt{width:100%;border-collapse:collapse}
+.pt tr{border-bottom:1px solid var(--border-soft)}
+.pt tr:last-child{border-bottom:none}
+.pt td{padding:9px 14px;vertical-align:middle}
+.c-pos{font-size:11px;color:var(--text-soft);width:28px}
+.c-name{font-size:13px;font-weight:500;color:var(--text)}
+.c-thru{font-size:11px;color:var(--text-soft);text-align:right;width:36px}
+.c-score{font-size:14px;font-weight:600;text-align:right;width:38px}
+.c-today{font-size:10px;font-weight:500;text-align:right;color:var(--text-soft);width:32px}
+.fin{color:var(--under);font-weight:600;font-size:11px}
+.tee-time{color:var(--gold);font-size:10px;font-style:italic;white-space:nowrap}
+
+.foot{text-align:center;font-size:11px;color:var(--text-soft);margin-top:20px;padding-top:14px;border-top:1px solid var(--border);line-height:1.8}
+
+/* ESPN Scores tab */
+.espn-wrap{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:0 1px 6px rgba(0,0,0,.05)}
+.espn-tbl{width:100%;border-collapse:collapse;font-size:12px}
+.espn-tbl thead tr{background:var(--green-dark)}
+.espn-tbl thead th{padding:9px 8px;color:var(--gold-light);font-weight:600;font-size:11px;text-align:center;white-space:nowrap}
+.espn-tbl thead th.th-name{text-align:left}
+.espn-tbl tbody tr{border-bottom:1px solid var(--border-soft);transition:background .12s}
+.espn-tbl tbody tr:last-child{border-bottom:none}
+.espn-tbl tbody tr:active{background:#f5f5f5}
+.espn-tbl td{padding:8px 8px;vertical-align:middle;text-align:center;white-space:nowrap}
+.e-pos{font-size:11px;color:var(--text-soft)}
+.e-name{font-size:13px;font-weight:500;color:var(--text);text-align:left}
+.e-score{font-size:13px;font-weight:700}
+.e-thru{font-size:11px;color:var(--text-soft)}
+.e-today{font-size:12px;font-weight:600}
+.cut-divider td{background:#fff3f3;color:var(--over);font-size:11px;font-weight:600;padding:5px 10px;border-top:2px solid #f5c6c6;border-bottom:2px solid #f5c6c6;text-align:left}
+.proj-cut-divider td{background:#fff8e6;color:#8a6200;font-size:11px;font-weight:600;padding:5px 10px;border-top:2px solid #f0d080;border-bottom:2px dashed #f0d080;text-align:left}
+.espn-err{padding:24px 16px;text-align:center;color:var(--text-soft);font-size:13px}
+</style>
+</head>
+<body>
+
+<header class="hd">
+  <div class="hd-inner">
+    <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+      <rect x="3" y="2" width="3" height="18" rx="1.5" fill="#b8963e"/>
+      <path d="M6 3.5L20 8l-14 5Z" fill="#f7f0dc"/>
+    </svg>
+    <h1>Masters Fantasy 2026</h1>
+  </div>
+  <div class="hd-sub">Augusta National · April 9–12</div>
+  <div class="tabs">
+    <button class="tab on" onclick="showTab('lb',this)">🏆 Leaderboard</button>
+    <button class="tab"    onclick="showTab('teams',this)">👥 Teams</button>
+    <button class="tab"    onclick="showTab('espn',this)">📋 ESPN</button>
+  </div>
+</header>
+
+<main class="main">
+  <div class="status-bar">
+    <div class="dot" id="dot"></div>
+    <div class="status-text" id="status-text">Fetching live scores from ESPN...</div>
+    <button class="refresh-btn" id="ref-btn" onclick="fetchAndRender()">↻ Refresh</button>
+  </div>
+
+  <div id="sec-lb" class="sec on">
+    <div class="lb" id="lb-content">
+      <div style="padding:20px 16px">
+        <div class="skeleton" style="width:60%;height:14px"></div>
+        <div class="skeleton" style="width:80%;height:14px;margin-top:16px"></div>
+        <div class="skeleton" style="width:70%;height:14px;margin-top:16px"></div>
+        <div class="skeleton" style="width:75%;height:14px;margin-top:16px"></div>
+        <div class="skeleton" style="width:65%;height:14px;margin-top:16px"></div>
+        <div class="skeleton" style="width:80%;height:14px;margin-top:16px"></div>
+        <div class="skeleton" style="width:55%;height:14px;margin-top:16px"></div>
+        <div class="skeleton" style="width:72%;height:14px;margin-top:16px"></div>
+        <div class="skeleton" style="width:68%;height:14px;margin-top:16px"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="sec-teams" class="sec">
+    <div id="teams-content">
+      <div>
+        <div class="skeleton" style="height:90px;border-radius:14px;margin-bottom:11px"></div>
+        <div class="skeleton" style="height:90px;border-radius:14px;margin-bottom:11px"></div>
+        <div class="skeleton" style="height:90px;border-radius:14px"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="sec-espn" class="sec">
+    <div id="espn-content">
+      <div class="espn-wrap">
+        <div style="padding:20px 16px">
+          <div class="skeleton" style="width:100%;height:14px"></div>
+          <div class="skeleton" style="width:100%;height:14px;margin-top:10px"></div>
+          <div class="skeleton" style="width:100%;height:14px;margin-top:10px"></div>
+          <div class="skeleton" style="width:100%;height:14px;margin-top:10px"></div>
+          <div class="skeleton" style="width:100%;height:14px;margin-top:10px"></div>
+          <div class="skeleton" style="width:100%;height:14px;margin-top:10px"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot" id="foot">Scores sourced live from ESPN · Refresh for latest</div>
+</main>
+
+<script>
+// ─── TEAMS ────────────────────────────────────────────────────────────────────
+const TEAMS = [
+  { name:'Fletcher', stars:3, picks:['Bryson DeChambeau','Patrick Reed','Nicolai Højgaard','Daniel Berger','Sergio García'] },
+  { name:'Lions',    stars:2, picks:['Tommy Fleetwood','J.J. Spaun','Gary Woodland','Max Greyserman','Aaron Rai'] },
+  { name:'Lecky',    stars:2, picks:['Matt Fitzpatrick','Patrick Reed','Jacob Bridgeman','Harry Hall','Johnny Keefer'] },
+  { name:'Steve',    stars:5, picks:['Ludvig Åberg','Patrick Cantlay','Cameron Smith','Dustin Johnson','Sergio García'] },
+  { name:'Keith',    stars:4, picks:['Jon Rahm','Brooks Koepka','Jason Day','Alex Noren','Tom McKibbin'] },
+  { name:'Saunders', stars:4, picks:['Matt Fitzpatrick','Viktor Hovland','Tyrrell Hatton','Brian Harman','Andrew Novak'] },
+  { name:'Purkis',   stars:3, picks:['Ludvig Åberg','Patrick Reed','Jason Day','Michael Kim','Johnny Keefer'] },
+  { name:'Josh',     stars:2, picks:['Bryson DeChambeau','J.J. Spaun','Tyrrell Hatton','Michael Kim','Carlos Ortiz'] },
+  { name:'Jack',     stars:4, picks:['Jon Rahm','Jordan Spieth','Sungjae Im','Ryan Gerard','Sergio García'] },
+];
+
+// ─── FALLBACK (R1 snapshot, 9 Apr) ───────────────────────────────────────────
+const FALLBACK = [
+  {pos:'T1', name:'Sam Burns',         score:-5,thru:'F'},
+  {pos:'T1', name:'Rory McIlroy',      score:-5,thru:'F'},
+  {pos:'T3', name:'Jason Day',         score:-3,thru:'F'},
+  {pos:'T3', name:'Patrick Reed',      score:-3,thru:'F'},
+  {pos:'T3', name:'Gary Woodland',     score:-3,thru:'F'},
+  {pos:'T9', name:'Aaron Rai',         score:-2,thru:'F'},
+  {pos:'T9', name:'Jordan Spieth',     score:-2,thru:'F'},
+  {pos:'T15',name:'Tommy Fleetwood',   score:-1,thru:'F'},
+  {pos:'T15',name:'Sergio García',     score:-1,thru:'F'},
+  {pos:'T23',name:'Ryan Gerard',       score:0, thru:'F'},
+  {pos:'T23',name:'Jacob Bridgeman',   score:0, thru:'F'},
+  {pos:'T33',name:'Dustin Johnson',    score:1, thru:'F'},
+  {pos:'T33',name:'Tyrrell Hatton',    score:1, thru:'F'},
+  {pos:'T33',name:'Ludvig Åberg',      score:1, thru:'F'},
+  {pos:'T33',name:'Brooks Koepka',     score:1, thru:'F'},
+  {pos:'T44',name:'Cameron Smith',     score:2, thru:'F'},
+  {pos:'T44',name:'Matt Fitzpatrick',  score:2, thru:'F'},
+  {pos:'T44',name:'J.J. Spaun',       score:2, thru:'F'},
+  {pos:'T51',name:'Viktor Hovland',    score:3, thru:'F'},
+  {pos:'T51',name:'Andrew Novak',      score:3, thru:'F'},
+  {pos:'T51',name:'Tom McKibbin',      score:3, thru:'F'},
+  {pos:'T51',name:'Michael Kim',       score:3, thru:'F'},
+  {pos:'T51',name:'Nicolai Højgaard',  score:3, thru:'F'},
+  {pos:'T51',name:'Daniel Berger',     score:3, thru:'F'},
+  {pos:'T51',name:'Harry Hall',        score:3, thru:'F'},
+  {pos:'T62',name:'Johnny Keefer',     score:4, thru:'F'},
+  {pos:'T62',name:'Bryson DeChambeau', score:4, thru:'F'},
+  {pos:'T62',name:'Sungjae Im',        score:4, thru:'F'},
+  {pos:'T62',name:'Jon Rahm',          score:4, thru:'F'},
+  {pos:'T70',name:'Alex Noren',        score:5, thru:'F'},
+  {pos:'T70',name:'Patrick Cantlay',   score:5, thru:'F'},
+  {pos:'T70',name:'Brian Harman',      score:5, thru:'F'},
+  {pos:'T80',name:'Max Greyserman',    score:7, thru:'F'},
+  {pos:'T84',name:'Carlos Ortiz',      score:8, thru:'F'},
+];
+
+// ─── HELPERS ──────────────────────────────────────────────────────────────────
+function norm(s){
+  return (s||'').toLowerCase()
+    .replace(/[áàâä]/g,'a').replace(/[éèêë]/g,'e').replace(/[íìî]/g,'i')
+    .replace(/[óòôöø]/g,'o').replace(/[úùûü]/g,'u')
+    .replace(/å/g,'a').replace(/ñ/g,'n').replace(/[^\w\s]/g,' ')
+    .replace(/\s+/g,' ').trim();
+}
+function find(players,name){
+  const n=norm(name);
+  return players.find(p=>norm(p.name)===n)
+      || players.find(p=>{ const pn=norm(p.name); return n.split(' ').every(w=>w.length>1&&pn.includes(w)); });
+}
+function fmt(n){ return n===0?'E':n>0?'+'+n:''+n; }
+function scls(n){ return n<0?'u':n>0?'o':'e'; }
+function bcls(n){ return n<0?'b-u':n>0?'b-o':'b-e'; }
+function teamTotal(pl,picks){ return picks.reduce((s,nm)=>{ const p=find(pl,nm); return s+(p?p.score:0); },0); }
+function ranked(pl){ return TEAMS.map(t=>({...t,total:teamTotal(pl,t.picks)})).sort((a,b)=>a.total-b.total); }
+
+// ─── PARSE ESPN JSON API ─────────────────────────────────────────────────────
+function parseESPNJson(data){
+  const out=[], cut=[];
+  // Parse a score string: "E"->0, "-5"->-5, "+3"->3, "67"->67
+  const parseS=v=>{
+    if(v===null||v===undefined||v==='') return null;
+    v=String(v).trim();
+    if(v==='E') return 0;
+    const n=parseInt(v,10);
+    return isNaN(n)?null:n;
+  };
+  // Find a statistic by any of the given name/abbreviation strings
+  const getStat=(stats,names)=>{
+    if(!stats) return null;
+    const nl=names.map(s=>s.toLowerCase());
+    return stats.find(s=>nl.includes((s.name||'').toLowerCase())||nl.includes((s.abbreviation||'').toLowerCase()));
+  };
+  try{
+    const competitors=data?.events?.[0]?.competitions?.[0]?.competitors||[];
+    // Debug: log first competitor's raw data
+    if(competitors[0]) console.log('ESPN competitor sample:', JSON.stringify({
+      score: competitors[0].score, scoreValue: competitors[0].scoreValue,
+      statistics: competitors[0].statistics, status: competitors[0].status,
+      linescores: competitors[0].linescores,
+      teeTime: competitors[0].teeTime, startTime: competitors[0].startTime,
+    }, null, 2));
+    // Also log an in-progress player if one exists
+    const inProg=competitors.find(x=>x.status?.thru>0&&x.status?.type?.name!=='STATUS_FINISHED');
+    if(inProg) console.log('ESPN in-progress sample:', JSON.stringify({
+      name: inProg.athlete?.displayName,
+      score: inProg.score, statistics: inProg.statistics,
+      linescores: inProg.linescores, status: inProg.status,
+    }, null, 2));
+
+    // Convert a UTC ISO tee time string to UK local time (BST/GMT)
+    const toUKTime=iso=>{
+      if(!iso) return null;
+      try{
+        const d=new Date(iso);
+        if(isNaN(d)) return null;
+        return d.toLocaleTimeString('en-GB',{hour:'numeric',minute:'2-digit',hour12:true,timeZone:'Europe/London'});
+      }catch(e){ return null; }
+    };
+
+    competitors.forEach(c=>{
+      const name=c.athlete?.displayName||'';
+      if(!name||name.length<2) return;
+
+      // Position / cut status
+      const posRaw=c.status?.position?.displayName||c.status?.displayValue||'--';
+      const isCut=/^(CUT|WD|DQ|MDF|W\/D)$/i.test(posRaw)||c.status?.eliminated===true;
+      const pos=isCut?(posRaw||'CUT'):posRaw;
+
+      // ── Score to par ──────────────────────────────────────────────────────
+      let scoreVal=0;
+      const scoreStat=getStat(c.statistics,['scoreToPar','score to par','toPar','to par']);
+      if(scoreStat!=null){
+        const v=parseS(scoreStat.displayValue);
+        if(v!==null) scoreVal=v;
+      } else if(c.score!=null){
+        const v=parseS(c.score);
+        if(v!==null) scoreVal=v;
+      }
+
+      // ── Thru / tee time ───────────────────────────────────────────────────
+      // For players who haven't started: show UK tee time instead of '--'
+      let thru='--';
+      let teeTime=null;
+      const statusType=c.status?.type?.name||'';
+      if(statusType==='STATUS_FINISHED'||c.status?.completed===true){
+        thru='F';
+      } else if(c.status?.thru!=null && c.status.thru>0){
+        thru=String(c.status.thru);
+      } else {
+        // Not started — try to get tee time from various fields
+        const rawTee=c.teeTime||c.startTime||c.status?.teeTime||c.status?.startTime||null;
+        teeTime=toUKTime(rawTee);
+        thru=teeTime||'--';
+      }
+
+      // ── Today (current round score to par) ────────────────────────────────
+      // ESPN linescores[] has one entry per round, each with:
+      //   ls.value = raw strokes for THAT round only (e.g. 68, 74)
+      //   ls.displayValue = same as string
+      // Today = last linescore round strokes minus PAR(72).
+      // But we must verify ls.value is a single-round stroke total (60-90),
+      // NOT a cumulative total. If there are multiple linescores we can
+      // cross-check: sum of all should roughly equal overall strokes.
+      // Safest: today = scoreVal(overall) - sum of all PRIOR rounds' to-par.
+      let today=null;
+      const PAR=72;
+
+      if(Array.isArray(c.linescores) && c.linescores.length){
+        // dv (displayValue) is already the to-par score for that round e.g. "E", "-4", "+4"
+        // Always use dv of the last linescore — it is today's round score to par
+        const lastLS=c.linescores[c.linescores.length-1];
+        const dv=String(lastLS.displayValue||'').trim();
+        const v=parseS(dv);
+        if(v!==null) today=v;
+      }
+
+      // Fallback: statistics entry that looks like a to-par value (E/+N/-N)
+      if(today===null){
+        const todStat=getStat(c.statistics,[
+          'currentRoundScore','today','round score','roundScore','currentRound','todayScore'
+        ]);
+        if(todStat!=null){
+          const dv=String(todStat.displayValue||'').trim();
+          if(/^(E|[+\-]\d+)$/.test(dv)){ const v=parseS(dv); if(v!==null) today=v; }
+        }
+      }
+
+      // Status-level fallback
+      if(today===null){
+        const raw=c.status?.currentRoundScore??c.status?.today??null;
+        if(raw!=null){ const v=parseS(String(raw)); if(v!==null) today=v; }
+      }
+
+      const entry={pos,name,score:scoreVal,thru,teeTime,today,cut:isCut};
+      if(isCut) cut.push(entry); else out.push(entry);
+    });
+  }catch(e){ console.error('parseESPNJson',e); }
+  out._cut=cut;
+
+  // ── Projected cut line ────────────────────────────────────────────────────
+  // ESPN returns cut info in competitions[0].cuts[] or status/notes
+  let projCut=3; // fallback default
+  try{
+    const comp=data?.events?.[0]?.competitions?.[0];
+    const cuts=comp?.cuts;
+    if(Array.isArray(cuts)&&cuts.length){
+      // cuts[0] is typically the projected/current cut
+      const cs=cuts[0]?.cutScore??cuts[0]?.value??null;
+      if(cs!=null){const v=parseS(String(cs));if(v!==null)projCut=v;}
+    }
+    // Also check competition notes for cut line
+    if(projCut===3){
+      const notes=comp?.notes||[];
+      for(const n of notes){
+        const m=String(n.headline||n.text||'').match(/cut.*?([+-]?\d+|E)/i);
+        if(m){const v=parseS(m[1]);if(v!==null){projCut=v;break;}}
+      }
+    }
+  }catch(e){console.warn('projCut parse error',e);}
+  // If ESPN didn't give us a cut, compute it ourselves:
+  // The Masters cuts to low 50 players and ties.
+  if(projCut===3 && out.length>0){
+    const sorted=[...out].sort((a,b)=>a.score-b.score);
+    if(sorted.length>=50){
+      const cutScore=sorted[49].score; // 50th player (0-indexed)
+      projCut=cutScore; // cut includes all ties at this score
+    }
+  }
+  out._projCut=projCut;
+
+  return out;
+}
+
+// ─── RENDER LEADERBOARD ───────────────────────────────────────────────────────
+function renderLB(pl){
+  const list=ranked(pl);
+  const medals=['🥇','🥈','🥉'];
+  const rowG=['g1','g2','g3'];
+  let h='';
+  list.forEach((t,i)=>{
+    const rc=i<3?rowG[i]:'';
+    const rnk=i<3?`<div class="lb-medal">${medals[i]}</div>`:i===8?`<div class="lb-medal">👢</div>`:`<div class="lb-numrank">${i+1}</div>`;
+    const ptext=t.picks.map(nm=>{ const p=find(pl,nm); return nm.split(' ').pop()+(p?' ('+fmt(p.score)+')':''); }).join(' · ');
+    h+=`<div class="lb-row ${rc}" onclick="switchToTeam(${i})">
+      ${rnk}
+      <div>
+        <div class="lb-name">${t.name} <span style="font-size:11px;letter-spacing:1px">${'⭐'.repeat(t.stars||0)}</span></div>
+        <div class="lb-picks">${ptext}</div>
+      </div>
+      <div class="lb-score ${scls(t.total)}">${fmt(t.total)}</div>
+    </div>`;
+  });
+  document.getElementById('lb-content').innerHTML=h;
+}
+
+// ─── RENDER TEAMS ─────────────────────────────────────────────────────────────
+function renderTeams(pl){
+  const list=ranked(pl);
+  const medals=['🥇','🥈','🥉'];
+  let h='';
+  list.forEach((t,i)=>{
+    const rows=t.picks.map(nm=>{
+      const p=find(pl,nm);
+      const thru=!p?'--':p.thru==='F'?'<span class="fin">F</span>':p.teeTime?`<span class="tee-time">${p.thru}</span>`:p.thru;
+      const sc=p!=null?`<span class="${scls(p.score)}">${fmt(p.score)}</span>`:'<span style="color:#ccc">--</span>';
+      const hasStarted=p&&p.thru!=='--'&&!p.teeTime;
+      const todayTxt=(hasStarted&&p.today!=null)?`<span class="${scls(p.today)}">${fmt(p.today)}</span>`:'';
+      return `<tr><td class="c-pos">${p?p.pos:'--'}</td><td class="c-name">${nm}</td><td class="c-thru">${thru}</td><td class="c-score">${sc}</td><td class="c-today">${todayTxt}</td></tr>`;
+    }).join('');
+    h+=`<div class="tc" id="team-${i}">
+      <div class="tc-hd">
+        <div class="tc-name">${i<3?medals[i]:i===8?'👢':'#'+(i+1)} ${t.name}</div>
+        <div class="badge ${bcls(t.total)}">${fmt(t.total)}</div>
+      </div>
+      <table class="pt"><tbody>${rows}</tbody></table>
+    </div>`;
+  });
+  document.getElementById('teams-content').innerHTML=h;
+}
+
+// ─── RENDER ESPN SCORES ───────────────────────────────────────────────────────
+function renderESPN(pl){
+  const PROJ_CUT = (typeof pl._projCut==='number') ? pl._projCut : 3;
+  const active=[...pl].sort((a,b)=>a.score-b.score);
+  const cutPlayers=pl._cut||[];
+  if(!active.length&&!cutPlayers.length){
+    document.getElementById('espn-content').innerHTML='<div class="espn-wrap"><div class="espn-err">No data available</div></div>';
+    return;
+  }
+  function fmtScore(s){ return s===0?'<span class="e">E</span>':s>0?`<span class="o">+${s}</span>`:`<span class="u">${s}</span>`; }
+  function fmtToday(p){
+    // Only show today for players who have actually started (thru is a number or F, not a tee-time string)
+    const started = p.thru==='F' || (p.thru!=='--' && !p.teeTime && /^\d+$/.test(p.thru));
+    if(!started || p.today===null || p.today===undefined) return '<span style="color:#ccc">--</span>';
+    const s=p.today;
+    return s===0?'<span class="e">E</span>':s>0?`<span class="o">+${s}</span>`:`<span class="u">${s}</span>`;
+  }
+  let rows='';
+  let projCutInserted=false;
+  let cutInserted=false;
+  active.forEach(p=>{
+    // Insert projected cut line banner AFTER players at PROJ_CUT, before first player above it
+    if(!projCutInserted && p.score>PROJ_CUT){
+      projCutInserted=true;
+      const cutLabel=PROJ_CUT===0?'E':PROJ_CUT>0?`+${PROJ_CUT}`:`${PROJ_CUT}`;
+      rows+=`<tr class="proj-cut-divider"><td colspan="5">✂ PROJECTED CUT — players above (${cutLabel}) may miss cut</td></tr>`;
+    }
+    const thruTxt = p.thru==='F'?'<span class="fin">F</span>':p.teeTime?`<span class="tee-time">${p.thru}</span>`:p.thru||'--';
+    const projCutClass = (!projCutInserted || p.score>=PROJ_CUT) ? '' : '';
+    const belowCutStyle = projCutInserted && p.score>PROJ_CUT ? 'style="opacity:.65"' : '';
+    rows+=`<tr ${belowCutStyle}>
+      <td class="e-pos">${p.pos}</td>
+      <td class="e-name">${p.name}</td>
+      <td class="e-score">${fmtScore(p.score)}</td>
+      <td class="e-thru">${thruTxt}</td>
+      <td class="e-today">${fmtToday(p)}</td>
+    </tr>`;
+  });
+  if(cutPlayers.length){
+    rows+=`<tr class="cut-divider"><td colspan="5">✂ CUT / WD / DQ</td></tr>`;
+    cutPlayers.forEach(p=>{
+      const thruTxt = p.thru==='F'?'<span class="fin">F</span>':p.teeTime?`<span class="tee-time">${p.thru}</span>`:p.thru||'--';
+      rows+=`<tr style="opacity:.55">
+        <td class="e-pos">${p.pos}</td>
+        <td class="e-name">${p.name}</td>
+        <td class="e-score">${fmtScore(p.score)}</td>
+        <td class="e-thru">${thruTxt}</td>
+        <td class="e-today">${fmtToday(p)}</td>
+      </tr>`;
+    });
+  }
+  document.getElementById('espn-content').innerHTML=`
+    <div class="espn-wrap">
+      <table class="espn-tbl">
+        <thead><tr>
+          <th>POS</th>
+          <th class="th-name">PLAYER</th>
+          <th>SCORE</th>
+          <th>THRU</th>
+          <th>TODAY</th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>`;
+}
+
+function showTab(id,btn){
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('on'));
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('on'));
+  document.getElementById('sec-'+id).classList.add('on');
+  if(btn) btn.classList.add('on');
+  else document.querySelectorAll('.tab')[{lb:0,teams:1,espn:2}[id]||0].classList.add('on');
+}
+function switchToTeam(i){
+  showTab('teams',null);
+  setTimeout(()=>{ const el=document.getElementById('team-'+i); if(el) el.scrollIntoView({behavior:'smooth',block:'start'}); },100);
+}
+
+// ─── FETCH ────────────────────────────────────────────────────────────────────
+const ESPN_API='https://site.api.espn.com/apis/site/v2/sports/golf/leaderboard?event=401811941';
+
+async function fetchAndRender(){
+  const dot =document.getElementById('dot');
+  const stat=document.getElementById('status-text');
+  const btn =document.getElementById('ref-btn');
+  dot.className='dot';
+  stat.innerHTML='<span class="spin">↻</span> Fetching live scores...';
+  btn.disabled=true; btn.innerHTML='<span class="spin">↻</span>';
+
+  let players=null;
+  try{
+    const r=await fetch(ESPN_API);
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    const data=await r.json();
+    const parsed=parseESPNJson(data);
+    if(parsed.length>=5) players=parsed;
+  }catch(e){ console.error('ESPN API fetch failed',e); }
+
+  btn.disabled=false; btn.innerHTML='↻ Refresh';
+
+  if(players&&players.length>=5){
+    dot.className='dot live';
+    const now=new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+    stat.innerHTML=`<b>Live</b> · ${players.length} players · Updated ${now}`;
+    document.getElementById('foot').innerHTML=`Live scores from ESPN API · Updated ${now} · Refresh for latest`;
+    renderLB(players);
+    renderTeams(players);
+    renderESPN(players);
+  } else {
+    dot.className='dot err';
+    stat.innerHTML='⚠️ Live fetch failed · Showing last known scores';
+    document.getElementById('foot').innerHTML='Could not reach ESPN · Showing snapshot · Try refreshing later';
+    renderLB(FALLBACK);
+    renderTeams(FALLBACK);
+    renderESPN(FALLBACK);
+  }
+}
+
+fetchAndRender();
+</script>
+</body>
+</html>
