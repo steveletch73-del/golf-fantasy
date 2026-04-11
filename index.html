@@ -585,6 +585,7 @@ function renderESPN(pl){
       cutPlayers.forEach(p=>{ rows+=playerRow(p,true); });
     }
   }
+  const refreshCount=window._refreshCount||parseInt(localStorage.getItem('masterRefreshCount')||'0');
   document.getElementById('espn-content').innerHTML=`
     <div class="espn-wrap">
       <table class="espn-tbl">
@@ -597,7 +598,8 @@ function renderESPN(pl){
         </tr></thead>
         <tbody>${rows}</tbody>
       </table>
-    </div>`;
+    </div>
+    <div style="text-align:center;font-size:10px;color:#bbb;margin-top:8px;padding-bottom:4px">refreshed ${refreshCount} ${refreshCount===1?'time':'times'}</div>`;
 }
 
 function showTab(id,btn){
@@ -703,6 +705,8 @@ async function fetchAndRender(){
     stat.innerHTML=`<b>Live</b> · ${players.length} players · Updated ${now}`;
     document.getElementById('foot').innerHTML=`Live scores from ESPN API · Updated ${now} · Refresh for latest`;
     window._lastPlayers=players;
+    window._refreshCount=(parseInt(localStorage.getItem('masterRefreshCount')||'0'))+1;
+    localStorage.setItem('masterRefreshCount',window._refreshCount);
     renderLB(players);
     renderTeams(players);
     renderESPN(players);
