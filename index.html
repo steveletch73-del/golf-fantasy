@@ -428,16 +428,48 @@ function parseESPNJson(data){
 // ─── RENDER LEADERBOARD ───────────────────────────────────────────────────────
 function renderLB(pl){
   const list=ranked(pl);
-  const medals=['🥇','🥈','🥉'];
-  const rowG=['g1','g2','g3'];
+  const n=list.length;
+  const lastScore=list[n-1].total;
+
+  // Assign positions accounting for ties
+  const positions=[];
+  list.forEach((t,i)=>{
+    if(i===0) positions.push(1);
+    else positions.push(list[i-1].total===t.total ? positions[i-1] : i+1);
+  });
+
+  // Medal/boot logic with ties
+  // pos 1 ties all get gold, pos 2 (if no tie at 1) get silver etc
+  function getRnk(t,i,arrHtml){
+    const pos=positions[i];
+    const isLast=t.total===lastScore;
+    if(isLast) return `<div class="lb-medal">👢${arrHtml}</div>`;
+    if(pos===1) return `<div class="lb-medal">🥇${arrHtml}</div>`;
+    if(pos===2) return `<div class="lb-medal">🥈${arrHtml}</div>`;
+    if(pos===3) return `<div class="lb-medal">🥉${arrHtml}</div>`;
+    const tied=list.filter(x=>x.total===t.total).length>1;
+    return `<div class="lb-numrank">${tied?'T':''}${pos}${arrHtml}</div>`;
+  }
+
+  // Row background — gold/silver/bronze for top 3 positions (not indexes)
+  function getRC(t,i){
+    const pos=positions[i];
+    const isLast=t.total===lastScore;
+    if(isLast) return '';
+    if(pos===1) return 'g1';
+    if(pos===2) return 'g2';
+    if(pos===3) return 'g3';
+    return '';
+  }
+
   let h='';
   list.forEach((t,i)=>{
-    const rc=i<3?rowG[i]:'';
+    const rc=getRC(t,i);
     const lbArr=lbArrows[t.name];
     const lbArrHtml=lbArr?`<span style="font-size:11px;font-weight:700;margin-left:3px;color:${lbArr==='up'?'#1a6b3a':'#b83232'}">${lbArr==='up'?'▲':'▼'}</span>`:'';
-    const rnk=i<3?`<div class="lb-medal">${medals[i]}${lbArrHtml}</div>`:i===8?`<div class="lb-medal">👢${lbArrHtml}</div>`:`<div class="lb-numrank">${i+1}${lbArrHtml}</div>`;
+    const rnk=getRnk(t,i,lbArrHtml);
     const ptext=t.picks.map(nm=>{ const p=find(pl,nm); const cut=p?.cut===true; const active=p&&!cut&&p.thru!=='F'&&p.thru!=='--'&&!p.teeTime; const txt=nm.split(' ').pop()+(p?' ('+fmt(p.score)+')':''); return cut?`<span style="color:var(--over)">${txt}</span>`:active?`<span style="color:var(--green)">${txt}</span>`:txt; }).join(' · ');
-    h+=`<div class="lb-row ${rc}" onclick="switchToTeam(${i})" data-lb-pos-name="${t.name}" data-lb-pos-val="${i+1}">
+    h+=`<div class="lb-row ${rc}" onclick="switchToTeam(${i})" data-lb-pos-name="${t.name}" data-lb-pos-val="${positions[i]}">
       ${rnk}
       <div>
         <div class="lb-name">${t.name} <span style="font-size:11px;letter-spacing:1px">${'⭐'.repeat(t.stars||0)}</span></div>
@@ -585,7 +617,7 @@ function renderESPN(pl){
       cutPlayers.forEach(p=>{ rows+=playerRow(p,true); });
     }
   }
-  const refreshCount=window._refreshCount||parseInt(localStorage.getItem('masterRefreshCount')||'0');
+  const refreshCount=window._refreshCount||0;
   document.getElementById('espn-content').innerHTML=`
     <div class="espn-wrap">
       <table class="espn-tbl">
@@ -599,7 +631,7 @@ function renderESPN(pl){
         <tbody>${rows}</tbody>
       </table>
     </div>
-    <div style="text-align:center;font-size:10px;color:#bbb;margin-top:8px;padding-bottom:4px">refreshed ${refreshCount} ${refreshCount===1?'time':'times'}</div>`;
+    <div id="refresh-counter" style="text-align:center;font-size:10px;color:#bbb;margin-top:8px;padding-bottom:4px">↻ refreshed ${refreshCount} ${refreshCount===1?'time':'times'} by all visitors</div>`;
 }
 
 function showTab(id,btn){
@@ -678,6 +710,11 @@ function flashChanges(){
   }
 }
 
+function updateRefreshCounter(n){
+  const el=document.getElementById('refresh-counter');
+  if(el) el.textContent=`↻ refreshed ${n} ${n===1?'time':'times'} by all visitors`;
+}
+
 const ESPN_API='https://site.api.espn.com/apis/site/v2/sports/golf/leaderboard?event=401811941';
 
 async function fetchAndRender(){
@@ -705,8 +742,33 @@ async function fetchAndRender(){
     stat.innerHTML=`<b>Live</b> · ${players.length} players · Updated ${now}`;
     document.getElementById('foot').innerHTML=`Live scores from ESPN API · Updated ${now} · Refresh for latest`;
     window._lastPlayers=players;
-    window._refreshCount=(parseInt(localStorage.getItem('masterRefreshCount')||'0'))+1;
-    localStorage.setItem('masterRefreshCount',window._refreshCount);
+    // Increment shared counter on jsonbin.io
+    (async()=>{
+      try{
+        const headers={'X-Master-Key':'$2a$10$ZZYpFYGdNHFN29hcbu/zfO45tnNgkJaNRV8.qwVGvqFE8DRdFIBhy','Content-Type':'application/json','X-Bin-Versioning':'false'};
+        const get=await fetch('https://api.jsonbin.io/v3/b/69dba824aaba882197eeee8c',{headers});
+        const json=await get.json();
+        const newCount=(json.record?.count||0)+1;
+        await fetch('https://api.jsonbin.io/v3/b/69dba824aaba882197eeee8c',{method:'PUT',headers,body:JSON.stringify({count:newCount})});
+        window._refreshCount=newCount;
+        updateRefreshCounter(newCount);
+      }catch(e){
+        const fb=(parseInt(localStorage.getItem('masterRefreshCount')||'0'))+1;
+        localStorage.setItem('masterRefreshCount',fb);
+        window._refreshCount=fb;
+        updateRefreshCounter(fb);
+      }
+    })();
+    // Snapshot scores and positions BEFORE re-rendering
+    const scoreSnap={};
+    document.querySelectorAll('[data-score-name]').forEach(el=>{ scoreSnap[el.dataset.scoreName]=parseInt(el.dataset.scoreVal); });
+    const espnPosSnap={};
+    document.querySelectorAll('[data-pos-name]').forEach(el=>{ espnPosSnap[el.dataset.posName]=parseInt(el.dataset.posVal); });
+    const lbPosSnap={};
+    document.querySelectorAll('[data-lb-pos-name]').forEach(el=>{ lbPosSnap[el.dataset.lbPosName]=parseInt(el.dataset.lbPosVal); });
+    prevScores=scoreSnap;
+    prevESPNPos=espnPosSnap;
+    prevLBPos=lbPosSnap;
     renderLB(players);
     renderTeams(players);
     renderESPN(players);
