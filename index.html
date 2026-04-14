@@ -3,9 +3,107 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
-<title>Masters Fantasy 2026</title>
+<title>PGA Championship Fantasy 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap');
+#page-loading{display:flex;align-items:center;justify-content:center;min-height:100vh;background:#0a1628;flex-direction:column;gap:12px}
+.loading-title{font-family:'EB Garamond',Georgia,serif;font-size:22px;color:#f0d080}
+.loading-sub{font-size:12px;color:rgba(255,255,255,.3);font-family:'DM Sans',sans-serif}
+.dots{display:flex;gap:6px}
+.dot{width:7px;height:7px;border-radius:50%;background:#c9a84c;opacity:.3;animation:pulse 1.2s infinite}
+.dot:nth-child(2){animation-delay:.2s}
+.dot:nth-child(3){animation-delay:.4s}
+@keyframes pulse{0%,100%{opacity:.3}50%{opacity:1}}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#0a1628;--navy-mid:#162240;--navy-light:#1e3058;
+  --gold:#c9a84c;--gold-light:#f0d080;--gold-pale:#fdf6e3;
+  --green:#1a6b3a;--green-bg:#e5f3ec;
+  --red:#b83232;--red-bg:#fdecea;
+  --text:#1c1c1c;--text-mid:#5a5a5a;--text-soft:#999;
+  --border:#e2e2e2;--bg:#f5f3ee;--white:#fff;
+  --radius:12px;
+}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased}
+
+/* ── HEADER ── */
+.hd{background:var(--navy);padding:20px 16px 0;text-align:center;position:sticky;top:0;z-index:100;box-shadow:0 2px 20px rgba(0,0,0,.4)}
+.hd-logo{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:4px}
+.hd h1{font-family:'EB Garamond',Georgia,serif;font-size:22px;font-weight:600;color:var(--gold-light)}
+.hd-sub{font-size:11px;color:rgba(255,255,255,.4);margin-bottom:12px}
+
+/* ── BUDGET BAR ── */
+.budget-bar{background:var(--navy-mid);border-top:1px solid rgba(255,255,255,.08);padding:12px 16px}
+.budget-inner{max-width:500px;margin:0 auto;display:flex;align-items:center;gap:12px}
+.budget-label{font-size:11px;color:rgba(255,255,255,.5);white-space:nowrap}
+.budget-track{flex:1;height:6px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden}
+.budget-fill{height:100%;background:var(--gold);border-radius:3px;transition:width .3s ease}
+.budget-fill.warning{background:#e88a2e}
+.budget-fill.danger{background:var(--red)}
+.budget-nums{font-family:'EB Garamond',serif;font-size:18px;font-weight:600;color:var(--gold-light);white-space:nowrap;min-width:90px;text-align:right}
+.budget-nums.danger{color:#ff7b7b}
+
+/* ── PICKS STRIP ── */
+.picks-strip{background:var(--navy-light);border-top:1px solid rgba(255,255,255,.06);padding:10px 16px 14px}
+.picks-inner{max-width:500px;margin:0 auto}
+.picks-label{font-size:10px;color:rgba(255,255,255,.35);letter-spacing:.5px;text-transform:uppercase;margin-bottom:8px}
+.picks-slots{display:flex;gap:6px}
+.slot{flex:1;background:rgba(255,255,255,.05);border:1px dashed rgba(255,255,255,.15);border-radius:8px;padding:6px 4px;text-align:center;min-height:44px;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:all .2s;cursor:default}
+.slot.filled{background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.3);cursor:pointer}
+.slot.filled:active{background:rgba(201,168,76,.2)}
+.slot-name{font-size:9px;font-weight:600;color:var(--gold-light);line-height:1.2;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 2px}
+.slot-cost{font-size:8px;color:rgba(255,255,255,.4);margin-top:2px}
+.slot-empty{font-size:18px;color:rgba(255,255,255,.1)}
+
+/* ── MAIN ── */
+.main{max-width:500px;margin:0 auto;padding:14px 12px 40px}
+
+/* ── CONTROLS ── */
+.controls{display:flex;gap:8px;margin-bottom:12px}
+.search-wrap{flex:1;position:relative}
+.search-wrap svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text-soft)}
+.search{width:100%;padding:9px 10px 9px 34px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:'DM Sans',sans-serif;background:var(--white);color:var(--text);outline:none}
+.search:focus{border-color:var(--navy-light)}
+
+
+/* ── PLAYER LIST ── */
+.player-list{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:0 1px 6px rgba(0,0,0,.05)}
+.player-row{display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:8px;padding:11px 14px;border-bottom:1px solid #f0f0f0;cursor:pointer;transition:background .12s;-webkit-tap-highlight-color:transparent}
+.player-row:last-child{border-bottom:none}
+.player-row:active{background:#f8f8f8}
+.player-row.selected{background:var(--green-bg)}
+.player-row.selected .player-name{color:var(--green)}
+.player-row.disabled{opacity:.4;cursor:not-allowed}
+.player-row.disabled:active{background:transparent}
+.player-name{font-size:14px;font-weight:600;color:var(--text)}
+
+.player-cost{font-family:'EB Garamond',Georgia,serif;font-size:20px;font-weight:600;color:var(--navy);text-align:right;min-width:52px}
+.player-cost .cost-unit{font-size:11px;font-weight:400;color:var(--text-soft)}
+.tick{width:22px;height:22px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.tick svg{width:12px;height:12px;stroke:#fff;stroke-width:2.5;fill:none}
+.add-btn{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--text-soft)}
+.add-btn svg{width:12px;height:12px;stroke:currentColor;stroke-width:2;fill:none}
+
+/* ── SECTION HEADER ── */
+.section-hd{font-size:10px;font-weight:600;color:var(--text-soft);letter-spacing:.5px;text-transform:uppercase;padding:14px 14px 6px;background:var(--white);border-bottom:1px solid #f0f0f0}
+
+/* ── NAME INPUT ── */
+.name-wrap{margin-bottom:12px}
+.name-label{font-size:11px;font-weight:600;color:var(--text-soft);letter-spacing:.5px;text-transform:uppercase;display:block;margin-bottom:6px}
+.name-input{width:100%;padding:11px 14px;border:1px solid var(--border);border-radius:8px;font-size:15px;font-family:'DM Sans',sans-serif;background:var(--white);color:var(--text);outline:none;transition:border-color .15s}
+.name-input:focus{border-color:var(--navy-light)}
+.name-input.error{border-color:var(--red)}
+
+/* ── SUBMIT ── */
+.submit-wrap{margin-top:16px}
+.submit-btn{width:100%;padding:14px;background:var(--navy);color:var(--gold-light);font-family:'EB Garamond',Georgia,serif;font-size:18px;font-weight:600;border:none;border-radius:var(--radius);cursor:pointer;letter-spacing:.3px;transition:background .15s}
+.submit-btn:disabled{opacity:.4;cursor:not-allowed}
+.submit-btn:not(:disabled):active{background:var(--navy-mid)}
+.submit-btn.ready{background:var(--green)}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--text);color:#fff;font-size:13px;padding:10px 18px;border-radius:20px;opacity:0;transition:all .3s;z-index:999;white-space:nowrap;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
   --green:#1a5c35;--green-dark:#0d3820;
@@ -74,6 +172,7 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(-
 .pt td{padding:9px 14px;vertical-align:middle}
 .c-pos{font-size:11px;color:var(--text-soft);width:28px}
 .c-name{font-size:13px;font-weight:500;color:var(--text)}
+.c-cost{font-size:11px;color:var(--text-soft);width:44px;white-space:nowrap}
 .c-thru{font-size:11px;color:var(--text-soft);text-align:right;width:36px}
 .c-score{font-size:14px;font-weight:600;text-align:right;width:38px}
 .c-today{font-size:10px;font-weight:500;text-align:right;color:var(--text-soft);width:32px}
@@ -117,16 +216,68 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(-
 </style>
 </head>
 <body>
+<div id="page-loading">
+  <div class="loading-title">PGA Championship Fantasy 2026</div>
+  <div class="loading-sub">Loading…</div>
+  <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+</div>
+<div id="page-select" style="display:none"><header class="hd">
+  <div class="hd-logo">
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+      <circle cx="10" cy="10" r="9" stroke="#c9a84c" stroke-width="1.5"/>
+      <path d="M10 4v6l4 2" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>
+    <h1>PGA Championship 2026</h1>
+  </div>
+  <div class="hd-sub">Team Selection · Aronimink GC · May 14–17</div>
+  <div class="budget-bar">
+    <div class="budget-inner">
+      <span class="budget-label">Budget</span>
+      <div class="budget-track"><div class="budget-fill" id="budget-fill"></div></div>
+      <div class="budget-nums" id="budget-nums">£50.0m</div>
+    </div>
+  </div>
+  <div class="picks-strip">
+    <div class="picks-inner">
+      <div class="picks-label">Your picks — tap to remove</div>
+      <div class="picks-slots" id="picks-slots">
+        <div class="slot" id="slot-0"><span class="slot-empty">+</span></div>
+        <div class="slot" id="slot-1"><span class="slot-empty">+</span></div>
+        <div class="slot" id="slot-2"><span class="slot-empty">+</span></div>
+        <div class="slot" id="slot-3"><span class="slot-empty">+</span></div>
+        <div class="slot" id="slot-4"><span class="slot-empty">+</span></div>
+      </div>
+    </div>
+  </div>
+</header>
 
-<header class="hd">
+<main class="main">
+  <div class="controls">
+    <div class="search-wrap">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="6" cy="6" r="4"/><path d="M10 10l2.5 2.5"/></svg>
+      <input class="search" id="search" type="search" placeholder="Search players…" autocomplete="off"/>
+    </div>
+  </div>
+  <div class="player-list" id="player-list"></div>
+  <div class="name-wrap">
+    <label class="name-label" for="player-name">Your name</label>
+    <input class="name-input" id="player-name" type="text" placeholder="e.g. Fletcher" autocomplete="off" maxlength="30"/>
+  </div>
+  <div class="submit-wrap">
+    <button class="submit-btn" id="submit-btn" disabled onclick="submitTeam()">Select 5 players to continue →</button>
+  </div>
+</main>
+
+<div class="toast" id="toast"></div></div>
+<div id="page-pga" style="display:none"><header class="hd">
   <div class="hd-inner">
     <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
       <rect x="3" y="2" width="3" height="18" rx="1.5" fill="#b8963e"/>
       <path d="M6 3.5L20 8l-14 5Z" fill="#f7f0dc"/>
     </svg>
-    <h1>Masters Fantasy 2026</h1>
+    <h1>PGA Championship Fantasy 2026</h1>
   </div>
-  <div class="hd-sub">Augusta National · April 9–12</div>
+  <div class="hd-sub">Aronimink GC · May 14–17, 2026</div>
   <div class="tabs">
     <button class="tab on" onclick="showTab('lb',this)">🏆 Leaderboard</button>
     <button class="tab"    onclick="showTab('teams',this)">👥 Teams</button>
@@ -183,58 +334,418 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(-
   </div>
 
   <div class="foot" id="foot">Scores sourced live from ESPN · Refresh for latest</div>
-</main>
-
+</main></div>
 <script>
-// ─── TEAMS ────────────────────────────────────────────────────────────────────
-const TEAMS = [
-  { name:'Fletcher', stars:3, picks:['Bryson DeChambeau','Patrick Reed','Nicolai Højgaard','Daniel Berger','Sergio García'] },
-  { name:'Lions',    stars:2, picks:['Tommy Fleetwood','J.J. Spaun','Gary Woodland','Max Greyserman','Aaron Rai'] },
-  { name:'Lecky',    stars:2, picks:['Matt Fitzpatrick','Patrick Reed','Jacob Bridgeman','Harry Hall','Johnny Keefer'] },
-  { name:'Steve',    stars:5, picks:['Ludvig Åberg','Patrick Cantlay','Cameron Smith','Dustin Johnson','Sergio García'] },
-  { name:'Keith',    stars:4, picks:['Jon Rahm','Brooks Koepka','Jason Day','Alex Noren','Tom McKibbin'] },
-  { name:'Saunders', stars:4, picks:['Matt Fitzpatrick','Viktor Hovland','Tyrrell Hatton','Brian Harman','Andrew Novak'] },
-  { name:'Purkis',   stars:3, picks:['Ludvig Åberg','Patrick Reed','Jason Day','Michael Kim','Johnny Keefer'] },
-  { name:'Josh',     stars:2, picks:['Bryson DeChambeau','J.J. Spaun','Tyrrell Hatton','Michael Kim','Carlos Ortiz'] },
-  { name:'Jack',     stars:4, picks:['Jon Rahm','Jordan Spieth','Sungjae Im','Ryan Gerard','Sergio García'] },
+const ROUTER_BIN='69de381d36566621a8b0f1ca';
+const ROUTER_KEY='$2a$10$ZZYpFYGdNHFN29hcbu/zfO45tnNgkJaNRV8.qwVGvqFE8DRdFIBhy';
+
+// ── SELECT PAGE ───────────────────────────────────────────────────────────────
+const BUDGET = 40;
+const MAX_PICKS = 5;
+
+const PLAYERS = [
+  {name:'Scottie Scheffler',   odds:380,   cost:20.0},
+  {name:'Rory McIlroy',        odds:650,   cost:16.5},
+  {name:'Bryson DeChambeau',   odds:1000,  cost:14.5},
+  {name:'Jon Rahm',            odds:1200,  cost:13.5},
+  {name:'Xander Schauffele',   odds:1600,  cost:12.0},
+  {name:'Tommy Fleetwood',     odds:1800,  cost:11.5},
+  {name:'Ludvig Åberg',        odds:1800,  cost:11.5},
+  {name:'Collin Morikawa',     odds:2200,  cost:11.0},
+  {name:'Cameron Young',       odds:2200,  cost:11.0},
+  {name:'Justin Thomas',       odds:2500,  cost:10.5},
+  {name:'Brooks Koepka',       odds:3300,  cost:9.5},
+  {name:'Viktor Hovland',      odds:3500,  cost:9.5},
+  {name:'Tyrrell Hatton',      odds:3500,  cost:9.5},
+  {name:'Justin Rose',         odds:3500,  cost:9.5},
+  {name:'Joaquin Niemann',     odds:3500,  cost:9.5},
+  {name:'Chris Gotterup',      odds:4000,  cost:9.0},
+  {name:'Patrick Reed',        odds:4000,  cost:9.0},
+  {name:'Hideki Matsuyama',    odds:4000,  cost:9.0},
+  {name:'Patrick Cantlay',     odds:4500,  cost:8.5},
+  {name:'Matt Fitzpatrick',    odds:4500,  cost:8.5},
+  {name:'Ben Griffin',         odds:5000,  cost:8.5},
+  {name:'Jordan Spieth',       odds:5000,  cost:8.5},
+  {name:'Shane Lowry',         odds:6000,  cost:8.0},
+  {name:'Corey Conners',       odds:6000,  cost:8.0},
+  {name:'Robert MacIntyre',    odds:6600,  cost:7.5},
+  {name:'Sungjae Im',          odds:7000,  cost:7.5},
+  {name:'Sepp Straka',         odds:7000,  cost:7.5},
+  {name:'Russell Henley',      odds:7000,  cost:7.5},
+  {name:'Wyndham Clark',       odds:8000,  cost:7.0},
+  {name:'Tony Finau',          odds:8000,  cost:7.0},
+  {name:'Si Woo Kim',          odds:8000,  cost:7.0},
+  {name:'Sam Burns',           odds:8000,  cost:7.0},
+  {name:'Maverick McNealy',    odds:8000,  cost:7.0},
+  {name:'Jason Day',           odds:8000,  cost:7.0},
+  {name:'Jake Knapp',          odds:8000,  cost:7.0},
+  {name:'J.J. Spaun',         odds:8000,  cost:7.0},
+  {name:'Harris English',      odds:8000,  cost:7.0},
+  {name:'Daniel Berger',       odds:8000,  cost:7.0},
+  {name:'Min Woo Lee',         odds:9000,  cost:7.0},
+  {name:'Max Homa',            odds:9000,  cost:7.0},
+  {name:'Cameron Smith',       odds:10000, cost:6.5},
+  {name:'Jacob Bridgeman',     odds:10000, cost:6.5},
+  {name:'David Puig',          odds:10000, cost:6.5},
+  {name:'Will Zalatoris',      odds:11000, cost:6.5},
+  {name:'Keegan Bradley',      odds:11000, cost:6.5},
+  {name:'Byeong Hun An',       odds:12000, cost:6.0},
+  {name:'Akshay Bhatia',       odds:12000, cost:6.0},
+  {name:'Adam Scott',          odds:12000, cost:6.0},
+  {name:'Dean Burmester',      odds:12000, cost:6.0},
+  {name:'Aaron Rai',           odds:13000, cost:6.0},
+  {name:'Sahith Theegala',     odds:13000, cost:6.0},
+  {name:'Dustin Johnson',      odds:13000, cost:6.0},
+  {name:'Taylor Pendrith',     odds:14000, cost:5.5},
+  {name:'Sergio García',       odds:14000, cost:5.5},
+  {name:'Ryan Gerard',         odds:14000, cost:5.5},
+  {name:'Gary Woodland',       odds:14000, cost:5.5},
+  {name:'Brian Harman',        odds:15000, cost:5.5},
+  {name:'Tom Kim',             odds:15000, cost:5.5},
+  {name:'Alex Noren',          odds:15000, cost:5.5},
+  {name:'Rasmus Højgaard',     odds:15000, cost:5.5},
+  {name:'Nicolai Højgaard',    odds:15000, cost:5.5},
+  {name:'Michael Kim',         odds:15000, cost:5.5},
+  {name:'Keith Mitchell',      odds:15000, cost:5.5},
+  {name:'J.T. Poston',        odds:15000, cost:5.5},
+  {name:'Harry Hall',          odds:15000, cost:5.5},
+  {name:'Denny McCarthy',      odds:15000, cost:5.5},
+  {name:'Rickie Fowler',       odds:17000, cost:5.0},
+  {name:'Davis Thompson',      odds:17000, cost:5.0},
+  {name:'Andrew Novak',        odds:18000, cost:5.0},
+  {name:'Bud Cauley',          odds:20000, cost:4.0},
+  {name:'Billy Horschel',      odds:20000, cost:4.0},
+  {name:'Thomas Detry',        odds:20000, cost:4.0},
+  {name:'Taylor Moore',        odds:20000, cost:4.0},
+  {name:'Stephan Jaeger',      odds:20000, cost:4.0},
+  {name:'Samuel Stevens',      odds:20000, cost:4.0},
 ];
 
-// ─── FALLBACK (R1 snapshot, 9 Apr) ───────────────────────────────────────────
+let picks = []; // array of player names
+let searchQuery = '';
+
+function spent() { return picks.reduce((s,n)=>{ const p=PLAYERS.find(x=>x.name===n); return s+(p?p.cost:0); },0); }
+function remaining() { return BUDGET - spent(); }
+function fmtOdds(o) { return `+${o.toLocaleString()}`; }
+function fmtCost(c) { return c.toFixed(1); }
+
+function updateBudget() {
+  const s = spent();
+  const rem = BUDGET - s;
+  const pct = (s / BUDGET) * 100;
+  const fill = document.getElementById('budget-fill');
+  const nums = document.getElementById('budget-nums');
+  fill.style.width = Math.min(pct, 100) + '%';
+  fill.className = 'budget-fill' + (pct>90?' danger':pct>70?' warning':'');
+  nums.textContent = `£${fmtCost(rem)}m left`;
+  nums.className = 'budget-nums' + (rem < 0 ? ' danger' : '');
+}
+
+function updateSlots() {
+  for(let i=0;i<5;i++){
+    const slot = document.getElementById('slot-'+i);
+    const name = picks[i];
+    if(name){
+      const p = PLAYERS.find(x=>x.name===name);
+      const short = name.split(' ').pop();
+      slot.className = 'slot filled';
+      slot.innerHTML = `<span class="slot-name">${short}</span><span class="slot-cost">£${fmtCost(p.cost)}m</span>`;
+      slot.onclick = () => removePick(name);
+    } else {
+      slot.className = 'slot';
+      slot.innerHTML = '<span class="slot-empty">+</span>';
+      slot.onclick = null;
+    }
+  }
+}
+
+function updateSubmit() {
+  const btn = document.getElementById('submit-btn');
+  const rem = remaining();
+  if(picks.length === MAX_PICKS && rem >= 0) {
+    btn.disabled = false;
+    btn.className = 'submit-btn ready';
+    btn.textContent = `Confirm team · £${fmtCost(spent())}m spent →`;
+  } else if(picks.length < MAX_PICKS) {
+    btn.disabled = true;
+    btn.className = 'submit-btn';
+    btn.textContent = `Select ${MAX_PICKS - picks.length} more player${MAX_PICKS-picks.length===1?'':'s'} to continue →`;
+  } else {
+    btn.disabled = true;
+    btn.className = 'submit-btn';
+    btn.textContent = `Over budget by £${fmtCost(-rem)}m`;
+  }
+}
+
+function togglePick(name) {
+  const p = PLAYERS.find(x=>x.name===name);
+  if(picks.includes(name)){
+    removePick(name);
+    return;
+  }
+  if(picks.length >= MAX_PICKS){ showToast('Remove a player first'); return; }
+  if(remaining() < p.cost){ showToast(`Not enough budget (need £${fmtCost(p.cost)}m)`); return; }
+  picks.push(name);
+  updateBudget(); updateSlots(); updateSubmit(); render();
+}
+
+function removePick(name) {
+  picks = picks.filter(n=>n!==name);
+  updateBudget(); updateSlots(); updateSubmit(); render();
+}
+
+function render() {
+  const q = searchQuery.toLowerCase();
+  let list = [...PLAYERS];
+  if(q) list = list.filter(p=>p.name.toLowerCase().includes(q));
+  const rem = remaining();
+  let html = '';
+
+  // Group: selected first, then affordable, then too expensive
+  const selected = list.filter(p=>picks.includes(p.name));
+  const affordable = list.filter(p=>!picks.includes(p.name) && p.cost<=rem);
+  const tooExp = list.filter(p=>!picks.includes(p.name) && p.cost>rem);
+
+  function row(p, disabled=false) {
+    const sel = picks.includes(p.name);
+    const cls = sel?'player-row selected':disabled?'player-row disabled':'player-row';
+    const action = sel
+      ? `<div class="tick"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>`
+      : `<div class="add-btn"><svg viewBox="0 0 12 12"><line x1="6" y1="2" x2="6" y2="10"/><line x1="2" y1="6" x2="10" y2="6"/></svg></div>`;
+    return `<div class="${cls}" data-name="${p.name}" data-disabled="${disabled}">
+      <div>
+        <div class="player-name">${p.name}</div>
+
+      </div>
+      <div class="player-cost">£${fmtCost(p.cost)}<span class="cost-unit">m</span></div>
+      ${action}
+    </div>`;
+  }
+
+  if(selected.length && !q){
+    html += `<div class="section-hd">✓ Selected</div>`;
+    selected.forEach(p=>html+=row(p));
+  }
+  if(affordable.length){
+    if(selected.length && !q) html += `<div class="section-hd">Available</div>`;
+    affordable.forEach(p=>html+=row(p));
+  }
+  if(tooExp.length && picks.length < MAX_PICKS){
+    html += `<div class="section-hd">Over budget</div>`;
+    tooExp.forEach(p=>html+=row(p, true));
+  }
+
+  document.getElementById('player-list').innerHTML = html || '<div style="padding:20px;text-align:center;color:#999;font-size:13px">No players found</div>';
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show';
+  clearTimeout(t._t);
+  t._t = setTimeout(()=>t.className='toast', 2200);
+}
+
+async function submitTeam() {
+  if(picks.length !== MAX_PICKS || remaining() < 0) return;
+  const nameEl = document.getElementById('player-name');
+  const name = nameEl.value.trim();
+  if(!name) {
+    nameEl.className = 'name-input error';
+    nameEl.focus();
+    showToast('Please enter your name');
+    return;
+  }
+  nameEl.className = 'name-input';
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = true;
+  btn.textContent = 'Submitting…';
+  try {
+    // Read current data
+    const getRes = await fetch(`https://api.jsonbin.io/v3/b/${ROUTER_BIN}`, {
+      headers: {'X-Master-Key': ROUTER_KEY}
+    });
+    const current = await getRes.json();
+    const data = current.record || {teams:{}, eventStarted:false};
+    // Write/overwrite this team
+    data.teams[name] = {
+      picks: picks,
+      submitted: new Date().toISOString(),
+      spent: spent()
+    };
+    // Save back
+    await fetch(`https://api.jsonbin.io/v3/b/${ROUTER_BIN}`, {
+      method: 'PUT',
+      headers: {'X-Master-Key': ROUTER_KEY, 'Content-Type': 'application/json', 'X-Bin-Versioning': 'false'},
+      body: JSON.stringify(data)
+    });
+    // Show success screen
+    showSuccess(name);
+  } catch(e) {
+    btn.disabled = false;
+    updateSubmit();
+    showToast('Submission failed — check connection and try again');
+  }
+}
+
+function showSuccess(name) {
+  document.querySelector('.main').innerHTML = `
+    <div style="text-align:center;padding:40px 20px">
+      <div style="font-size:48px;margin-bottom:16px">⛳</div>
+      <div style="font-family:'EB Garamond',serif;font-size:26px;font-weight:600;color:var(--navy);margin-bottom:8px">Team submitted!</div>
+      <div style="font-size:14px;color:var(--text-mid);margin-bottom:24px">Good luck, ${name}!</div>
+      <div style="background:var(--white);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:20px">
+        ${picks.map((n,i)=>{const p=PLAYERS.find(x=>x.name===n);return `
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:11px 16px;border-bottom:1px solid #f0f0f0${i===picks.length-1?';border-bottom:none':''}">
+            <span style="font-size:14px;font-weight:600">${n}</span>
+            <span style="font-family:'EB Garamond',serif;font-size:18px;color:var(--navy)">£${fmtCost(p.cost)}m</span>
+          </div>`;}).join('')}
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:11px 16px;background:#f8f6f0">
+          <span style="font-size:12px;font-weight:600;color:var(--text-soft);text-transform:uppercase;letter-spacing:.5px">Total spent</span>
+          <span style="font-family:'EB Garamond',serif;font-size:20px;font-weight:600;color:var(--green)">£${fmtCost(spent())}m</span>
+        </div>
+      </div>
+      <div style="font-size:12px;color:var(--text-soft)">You can resubmit before the tournament starts — your latest picks will be used.</div>
+      <button onclick="location.reload()" style="margin-top:20px;padding:12px 24px;background:var(--navy);color:var(--gold-light);font-family:'EB Garamond',serif;font-size:17px;border:none;border-radius:10px;cursor:pointer">Change picks →</button>
+    </div>`;
+}
+
+document.getElementById('search').addEventListener('input', e=>{
+  searchQuery = e.target.value;
+  render();
+});
+
+// Event delegation for player rows
+document.getElementById('player-list').addEventListener('click', e=>{
+  const row = e.target.closest('[data-name]');
+  if(!row) return;
+  if(row.dataset.disabled === 'true') return;
+  togglePick(row.dataset.name);
+});
+
+
+
+// ── PGA SCORING PAGE ──────────────────────────────────────────────────────────
+// ─── TEAMS ────────────────────────────────────────────────────────────────────
+// ─── TEAMS ───────────────────────────────────────────────────────────────────
+// Once teams are finalised, replace the example below with the full list from
+// the Admin page "Copy teams as JS code" button. Once real teams are here,
+// jsonbin will no longer be checked.
+const TEAMS = [
+  { name:'Example', stars:0, picks:['Scottie Scheffler','Rory McIlroy','Jon Rahm','Tyrrell Hatton','Shane Lowry'] },
+];
+
+// ─── PLAYER COSTS (from betting odds) ────────────────────────────────────────
+const PLAYER_COSTS = {
+  'Scottie Scheffler':20.0,'Rory McIlroy':16.5,'Bryson DeChambeau':14.5,
+  'Jon Rahm':13.5,'Xander Schauffele':12.0,'Tommy Fleetwood':11.5,
+  'Ludvig Åberg':11.5,'Collin Morikawa':11.0,'Cameron Young':11.0,
+  'Justin Thomas':10.5,'Brooks Koepka':9.5,'Viktor Hovland':9.5,
+  'Tyrrell Hatton':9.5,'Justin Rose':9.5,'Joaquin Niemann':9.5,
+  'Chris Gotterup':9.0,'Patrick Reed':9.0,'Hideki Matsuyama':9.0,
+  'Patrick Cantlay':8.5,'Matt Fitzpatrick':8.5,'Ben Griffin':8.5,
+  'Jordan Spieth':8.5,'Shane Lowry':8.0,'Corey Conners':8.0,
+  'Robert MacIntyre':7.5,'Sungjae Im':7.5,'Sepp Straka':7.5,
+  'Russell Henley':7.5,'Wyndham Clark':7.0,'Tony Finau':7.0,
+  'Si Woo Kim':7.0,'Sam Burns':7.0,'Maverick McNealy':7.0,
+  'Jason Day':7.0,'Jake Knapp':7.0,'J.J. Spaun':7.0,
+  'Harris English':7.0,'Daniel Berger':7.0,'Min Woo Lee':7.0,
+  'Max Homa':7.0,'Cameron Smith':6.5,'Jacob Bridgeman':6.5,
+  'David Puig':6.5,'Will Zalatoris':6.5,'Keegan Bradley':6.5,
+  'Byeong Hun An':6.0,'Akshay Bhatia':6.0,'Adam Scott':6.0,
+  'Dean Burmester':6.0,'Aaron Rai':6.0,'Sahith Theegala':6.0,
+  'Dustin Johnson':6.0,'Taylor Pendrith':5.5,'Sergio García':5.5,
+  'Ryan Gerard':5.5,'Gary Woodland':5.5,'Brian Harman':5.5,
+  'Tom Kim':5.5,'Alex Noren':5.5,'Rasmus Højgaard':5.5,
+  'Nicolai Højgaard':5.5,'Michael Kim':5.5,'Keith Mitchell':5.5,
+  'J.T. Poston':5.5,'Harry Hall':5.5,'Denny McCarthy':5.5,
+  'Rickie Fowler':5.0,'Davis Thompson':5.0,'Andrew Novak':5.0,
+  'Bud Cauley':4.0,'Billy Horschel':4.0,'Thomas Detry':4.0,
+  'Taylor Moore':4.0,'Stephan Jaeger':4.0,'Samuel Stevens':4.0,
+};
+
+// ─── JSONBIN CONFIG ──────────────────────────────────────────────────────────
+
+// ─── FALLBACK (temporary: 2026 Masters final results — update when 2026 PGA data available) ──
 const FALLBACK = [
-  {pos:'T1', name:'Sam Burns',         score:-5,thru:'F'},
-  {pos:'T1', name:'Rory McIlroy',      score:-5,thru:'F'},
-  {pos:'T3', name:'Jason Day',         score:-3,thru:'F'},
-  {pos:'T3', name:'Patrick Reed',      score:-3,thru:'F'},
-  {pos:'T3', name:'Gary Woodland',     score:-3,thru:'F'},
-  {pos:'T9', name:'Aaron Rai',         score:-2,thru:'F'},
-  {pos:'T9', name:'Jordan Spieth',     score:-2,thru:'F'},
-  {pos:'T15',name:'Tommy Fleetwood',   score:-1,thru:'F'},
-  {pos:'T15',name:'Sergio García',     score:-1,thru:'F'},
-  {pos:'T23',name:'Ryan Gerard',       score:0, thru:'F'},
-  {pos:'T23',name:'Jacob Bridgeman',   score:0, thru:'F'},
-  {pos:'T33',name:'Dustin Johnson',    score:1, thru:'F'},
-  {pos:'T33',name:'Tyrrell Hatton',    score:1, thru:'F'},
-  {pos:'T33',name:'Ludvig Åberg',      score:1, thru:'F'},
-  {pos:'T33',name:'Brooks Koepka',     score:1, thru:'F'},
-  {pos:'T44',name:'Cameron Smith',     score:2, thru:'F'},
-  {pos:'T44',name:'Matt Fitzpatrick',  score:2, thru:'F'},
-  {pos:'T44',name:'J.J. Spaun',       score:2, thru:'F'},
-  {pos:'T51',name:'Viktor Hovland',    score:3, thru:'F'},
-  {pos:'T51',name:'Andrew Novak',      score:3, thru:'F'},
-  {pos:'T51',name:'Tom McKibbin',      score:3, thru:'F'},
-  {pos:'T51',name:'Michael Kim',       score:3, thru:'F'},
-  {pos:'T51',name:'Nicolai Højgaard',  score:3, thru:'F'},
-  {pos:'T51',name:'Daniel Berger',     score:3, thru:'F'},
-  {pos:'T51',name:'Harry Hall',        score:3, thru:'F'},
-  {pos:'T62',name:'Johnny Keefer',     score:4, thru:'F'},
-  {pos:'T62',name:'Bryson DeChambeau', score:4, thru:'F'},
-  {pos:'T62',name:'Sungjae Im',        score:4, thru:'F'},
-  {pos:'T62',name:'Jon Rahm',          score:4, thru:'F'},
-  {pos:'T70',name:'Alex Noren',        score:5, thru:'F'},
-  {pos:'T70',name:'Patrick Cantlay',   score:5, thru:'F'},
-  {pos:'T70',name:'Brian Harman',      score:5, thru:'F'},
-  {pos:'T80',name:'Max Greyserman',    score:7, thru:'F'},
-  {pos:'T84',name:'Carlos Ortiz',      score:8, thru:'F'},
+  {pos:'1',   name:'Rory McIlroy',              score:-12, thru:'F'},
+  {pos:'2',   name:'Scottie Scheffler',          score:-11, thru:'F'},
+  {pos:'T3',  name:'Tyrrell Hatton',             score:-10, thru:'F'},
+  {pos:'T3',  name:'Russell Henley',             score:-10, thru:'F'},
+  {pos:'T3',  name:'Justin Rose',                score:-10, thru:'F'},
+  {pos:'T3',  name:'Cameron Young',              score:-10, thru:'F'},
+  {pos:'T7',  name:'Collin Morikawa',            score:-9,  thru:'F'},
+  {pos:'T7',  name:'Sam Burns',                  score:-9,  thru:'F'},
+  {pos:'T9',  name:'Max Homa',                   score:-8,  thru:'F'},
+  {pos:'T9',  name:'Xander Schauffele',          score:-8,  thru:'F'},
+  {pos:'11',  name:'Jake Knapp',                 score:-7,  thru:'F'},
+  {pos:'T12', name:'Jordan Spieth',              score:-5,  thru:'F'},
+  {pos:'T12', name:'Hideki Matsuyama',           score:-5,  thru:'F'},
+  {pos:'T12', name:'Brooks Koepka',              score:-5,  thru:'F'},
+  {pos:'T12', name:'Patrick Cantlay',            score:-5,  thru:'F'},
+  {pos:'T12', name:'Patrick Reed',               score:-5,  thru:'F'},
+  {pos:'T12', name:'Jason Day',                  score:-5,  thru:'F'},
+  {pos:'T18', name:'Maverick McNealy',           score:-4,  thru:'F'},
+  {pos:'T18', name:'Viktor Hovland',             score:-4,  thru:'F'},
+  {pos:'T18', name:'Matt Fitzpatrick',           score:-4,  thru:'F'},
+  {pos:'T21', name:'Keegan Bradley',             score:-3,  thru:'F'},
+  {pos:'T21', name:'Ludvig Åberg',               score:-3,  thru:'F'},
+  {pos:'T21', name:'Wyndham Clark',              score:-3,  thru:'F'},
+  {pos:'T24', name:'Matt McCarty',               score:-2,  thru:'F'},
+  {pos:'T24', name:'Adam Scott',                 score:-2,  thru:'F'},
+  {pos:'T24', name:'Sam Stevens',                score:-2,  thru:'F'},
+  {pos:'T24', name:'Brian Campbell',             score:-2,  thru:'F'},
+  {pos:'T24', name:'Michael Brennan',            score:-2,  thru:'F'},
+  {pos:'T24', name:'Chris Gotterup',             score:-2,  thru:'F'},
+  {pos:'T30', name:'Alex Noren',                 score:-1,  thru:'F'},
+  {pos:'T30', name:'Harris English',             score:-1,  thru:'F'},
+  {pos:'T30', name:'Shane Lowry',                score:-1,  thru:'F'},
+  {pos:'T33', name:'Gary Woodland',              score:0,   thru:'F'},
+  {pos:'T33', name:'Dustin Johnson',             score:0,   thru:'F'},
+  {pos:'T33', name:'Brian Harman',               score:0,   thru:'F'},
+  {pos:'T33', name:'Tommy Fleetwood',            score:0,   thru:'F'},
+  {pos:'T33', name:'Ben Griffin',                score:0,   thru:'F'},
+  {pos:'T38', name:'Jon Rahm',                   score:1,   thru:'F'},
+  {pos:'T38', name:'Ryan Gerard',                score:1,   thru:'F'},
+  {pos:'T38', name:'Haotong Li',                 score:1,   thru:'F'},
+  {pos:'T41', name:'Justin Thomas',              score:2,   thru:'F'},
+  {pos:'T41', name:'Jacob Bridgeman',            score:2,   thru:'F'},
+  {pos:'T41', name:'Sepp Straka',                score:2,   thru:'F'},
+  {pos:'T41', name:'Nick Taylor',                score:2,   thru:'F'},
+  {pos:'T41', name:'Kristoffer Reitan',          score:2,   thru:'F'},
+  {pos:'46',  name:'Sungjae Im',                 score:3,   thru:'F'},
+  {pos:'47',  name:'Si Woo Kim',                 score:4,   thru:'F'},
+  {pos:'T48', name:'Aaron Rai',                  score:5,   thru:'F'},
+  {pos:'T48', name:'Harry Hall',                 score:5,   thru:'F', cut:true},
+  {pos:'T48', name:'Ryan Fox',                   score:5,   thru:'F', cut:true},
+  {pos:'T48', name:'Danny Willett',              score:5,   thru:'F', cut:true},
+  {pos:'T48', name:'Bubba Watson',               score:5,   thru:'F', cut:true},
+  {pos:'T48', name:'J.J. Spaun',                score:5,   thru:'F', cut:true},
+  {pos:'T54', name:'Corey Conners',              score:6,   thru:'F'},
+  {pos:'T54', name:'Nicolai Højgaard',           score:6,   thru:'F', cut:true},
+  {pos:'T54', name:'Bryson DeChambeau',          score:6,   thru:'F', cut:true},
+  {pos:'T54', name:'Tyrrell Hatton',             score:6,   thru:'F'},
+  {pos:'T54', name:'Akshay Bhatia',              score:6,   thru:'F', cut:true},
+  {pos:'T60', name:'Kurt Kitayama',              score:7,   thru:'F'},
+  {pos:'T60', name:'Robert MacIntyre',           score:7,   thru:'F', cut:true},
+  {pos:'T60', name:'Andrew Novak',               score:7,   thru:'F', cut:true},
+  {pos:'T60', name:'Tom McKibbin',               score:7,   thru:'F', cut:true},
+  {pos:'T60', name:'Cameron Smith',              score:7,   thru:'F', cut:true},
+  {pos:'T66', name:'Sergio García',              score:8,   thru:'F'},
+  {pos:'T66', name:'Daniel Berger',              score:8,   thru:'F', cut:true},
+  {pos:'T66', name:'Michael Kim',                score:8,   thru:'F', cut:true},
+  {pos:'T72', name:'Fred Couples',               score:9,   thru:'F', cut:true},
+  {pos:'T72', name:'Mason Howell',               score:9,   thru:'F', cut:true},
+  {pos:'T75', name:'Rasmus Højgaard',            score:10,  thru:'F'},
+  {pos:'T75', name:'Mike Weir',                  score:10,  thru:'F', cut:true},
+  {pos:'T75', name:'Vijay Singh',                score:10,  thru:'F', cut:true},
+  {pos:'T78', name:'Carlos Ortiz',               score:11,  thru:'F', cut:true},
+  {pos:'T78', name:'Min Woo Lee',                score:11,  thru:'F', cut:true},
+  {pos:'T78', name:'Johnny Keefer',              score:11,  thru:'F', cut:true},
+  {pos:'T83', name:'Charl Schwartzel',           score:12,  thru:'F'},
+  {pos:'T83', name:'Max Greyserman',             score:12,  thru:'F', cut:true},
+  {pos:'85',  name:'Nico Echavarria',            score:13,  thru:'F', cut:true},
+  {pos:'91',  name:'Davis Riley',                score:18,  thru:'F', cut:true},
 ];
 
 // ─── HELPERS ──────────────────────────────────────────────────────────────────
@@ -275,7 +786,9 @@ function parseESPNJson(data){
     return stats.find(s=>nl.includes((s.name||'').toLowerCase())||nl.includes((s.abbreviation||'').toLowerCase()));
   };
   try{
-    const competitors=data?.events?.[0]?.competitions?.[0]?.competitors||[];
+    const comp=data?.events?.[0]?.competitions?.[0]||{};
+    const competitors=comp.competitors||[];
+    const compStatus=comp.status||{};
     // Also log an in-progress player if one exists
     const inProg=competitors.find(x=>x.status?.thru>0&&x.status?.type?.name!=='STATUS_FINISHED');
 
@@ -294,12 +807,19 @@ function parseESPNJson(data){
       if(!name||name.length<2) return;
 
       // Position / cut status
-      const posRaw=c.status?.position?.displayName||c.status?.displayValue||'--';
+      // Scoreboard endpoint has no per-player status object.
+      // Detect cut players by counting completed linescores:
+      // active players have 3+ rounds with real data; cut players only have 2.
+      const posRaw=c.status?.position?.displayName||c.status?.displayValue||'';
       const statusTypeName=c.status?.type?.name||'';
+      const completedLS=(Array.isArray(c.linescores)?c.linescores:[])
+        .filter(ls=>ls.displayValue&&ls.displayValue!=='-'&&(ls.value||0)>0);
       const isCut=/^(CUT|WD|DQ|MDF|W\/D)$/i.test(posRaw)
               ||c.status?.eliminated===true
-              ||/cut|wd|dq|mdf/i.test(statusTypeName);
-      const pos=isCut?(posRaw||'CUT'):posRaw;
+              ||/cut|wd|dq|mdf/i.test(statusTypeName)
+              ||(compStatus?.period>=3 && completedLS.length<=2);
+      // Position from ESPN order field when no posRaw available
+      const pos=isCut?(posRaw||'CUT'):(posRaw||String(c.order||'--'));
 
       // ── Score to par ──────────────────────────────────────────────────────
       let scoreVal=0;
@@ -313,16 +833,22 @@ function parseESPNJson(data){
       }
 
       // ── Thru / tee time ───────────────────────────────────────────────────
-      // For players who haven't started: show UK tee time instead of '--'
       let thru='--';
       let teeTime=null;
       const statusType=c.status?.type?.name||'';
+      const compCompleted=compStatus?.type?.completed===true||compStatus?.type?.name==='STATUS_FINAL';
       if(statusType==='STATUS_FINISHED'||c.status?.completed===true){
         thru='F';
       } else if(c.status?.thru!=null && c.status.thru>0){
         thru=String(c.status.thru);
+      } else if(completedLS.length>0){
+        // Scoreboard endpoint: derive thru from completed linescores
+        // If completed rounds >= total rounds in competition, player is finished
+        const totalRounds=compStatus?.period||4;
+        thru=(isCut||completedLS.length>=totalRounds)?'F':'--';
+      } else if(compCompleted){
+        thru='F';
       } else {
-        // Not started — try to get tee time from various fields
         const rawTee=c.teeTime||c.startTime||c.status?.teeTime||c.status?.startTime||null;
         teeTime=toUKTime(rawTee);
         thru=teeTime||'--';
@@ -367,7 +893,30 @@ function parseESPNJson(data){
       }
 
 
-      const entry={pos,name,score:scoreVal,thru,teeTime,today,cut:isCut};
+      // ── Hole-by-hole for current/latest round ────────────────────────────
+      // Scoreboard endpoint: linescores[round].linescores[hole]
+      let holes=null;
+      try{
+        const lss=Array.isArray(c.linescores)?c.linescores:[];
+        let currentLS=null;
+        for(let i=lss.length-1;i>=0;i--){
+          if(Array.isArray(lss[i].linescores)&&lss[i].linescores.length){
+            currentLS=lss[i]; break;
+          }
+        }
+        if(currentLS){
+          holes={
+            round: currentLS.period,
+            toPar: currentLS.displayValue,
+            entries: currentLS.linescores.map(h=>({
+              hole: h.period,
+              score: h.value,
+              toPar: h.scoreType?.displayValue??null,
+            }))
+          };
+        }
+      }catch(e){}
+      const entry={pos,name,score:scoreVal,thru,teeTime,today,cut:isCut,holes};
       if(isCut) cut.push(entry); else out.push(entry);
     });
   }catch(e){ console.error('parseESPNJson',e); }
@@ -400,11 +949,11 @@ function parseESPNJson(data){
   out._r2Complete=r2Complete;
 
   // If ESPN didn't give us a cut, compute it ourselves:
-  // The Masters cuts to low 50 players and ties.
+  // The PGA Championship cuts to low 70 players and ties.
   if(projCut===3 && out.length>0){
     const sorted=[...out].sort((a,b)=>a.score-b.score);
-    if(sorted.length>=50){
-      const cutScore=sorted[49].score; // 50th player (0-indexed)
+    if(sorted.length>=70){
+      const cutScore=sorted[69].score; // 50th player (0-indexed)
       projCut=cutScore;
     }
   }
@@ -484,7 +1033,9 @@ function renderTeams(pl){
       const todayTxt=(hasStarted&&p.today!=null)?`<span class="${scls(p.today)}">${fmt(p.today)}</span>`:'';
       const rowStyle=isCut?'background:#fdecea;':'';
       const scoreAttr=p?`data-score-name="${p.name}" data-score-val="${p.score}"`:'';
-      return `<tr style="${rowStyle}"><td class="c-pos">${p?p.pos:'--'}</td><td class="c-name">${nm}</td><td class="c-thru">${thru}</td><td class="c-score" ${scoreAttr}>${sc}</td><td class="c-today">${todayTxt}</td></tr>`;
+      const playerCost=PLAYER_COSTS[nm];
+      const costTxt=playerCost?`£${playerCost.toFixed(1)}m`:'--';
+      return `<tr style="${rowStyle}"><td class="c-pos">${p?p.pos:'--'}</td><td class="c-name">${nm}</td><td class="c-cost">${costTxt}</td><td class="c-thru">${thru}</td><td class="c-score" ${scoreAttr}>${sc}</td><td class="c-today">${todayTxt}</td></tr>`;
     }).join('');
     h+=`<div class="tc" id="team-${i}">
       <div class="tc-hd">
@@ -498,10 +1049,14 @@ function renderTeams(pl){
 }
 
 
+// Quail Hollow par 71 — update to Aronimink GC layout before 2026 tournament
+const HOLE_PARS=[4,5,4,3,4,3,4,5,4,4,4,3,5,4,5,3,4,4]; // update to Aronimink GC before 2026 tournament
+
 function buildScorecard(p){
-  if(!p.holes||!p.holes.length) return '<div class="sc-no-data">No hole data available yet</div>';
+  if(!p.holes||!p.holes.entries||!p.holes.entries.length) return '<div class="sc-no-data">No hole data available yet</div>';
+  const roundLabel=p.holes.round?`R${p.holes.round} · ${p.holes.toPar}`:'';
   function hCell(h){
-    const par=AUGUSTA_PARS[h.hole-1];
+    const par=HOLE_PARS[h.hole-1]??4;
     const d=h.score-par;
     const cls=d<=-2?'sc-eagle':d===-1?'sc-birdie':d===1?'sc-bogey':d>=2?'sc-double':'sc-par';
     // Circle for birdie, square for bogey+, double-circle for eagle
@@ -513,30 +1068,30 @@ function buildScorecard(p){
     return `<td class="${cls}"><span style="${style}">${h.score}</span></td>`;
   }
   function half(start,end){
-    const holes=p.holes.filter(h=>h.hole>=start&&h.hole<=end);
-    const pars=AUGUSTA_PARS.slice(start-1,end);
+    const entries=p.holes.entries.filter(h=>h.hole>=start&&h.hole<=end);
+    const pars=HOLE_PARS.slice(start-1,end);
     const halfPar=pars.reduce((a,b)=>a+b,0);
     let nums='',prow='',srow='';
     for(let i=start;i<=end;i++){
-      const h=holes.find(x=>x.hole===i);
+      const h=entries.find(x=>x.hole===i);
       nums+=`<th>${i}</th>`;
-      prow+=`<td>${AUGUSTA_PARS[i-1]}</td>`;
+      prow+=`<td>${HOLE_PARS[i-1]??4}</td>`;
       srow+=h?hCell(h):'<td style="color:#ddd">·</td>';
     }
-    const played=holes.length;
-    const tot=holes.reduce((s,h)=>s+h.score,0);
-    const playedPar=AUGUSTA_PARS.slice(start-1,start-1+played).reduce((a,b)=>a+b,0);
+    const played=entries.length;
+    const tot=entries.reduce((s,h)=>s+h.score,0);
+    const playedPar=HOLE_PARS.slice(start-1,start-1+played).reduce((a,b)=>a+b,0);
     const diff=tot-playedPar;
     const totTxt=played?`<td style="font-weight:700;font-size:12px;color:${diff<0?'#1a6b3a':diff>0?'#b83232':'#5a5a5a'}">${diff===0?'E':diff>0?'+'+diff:diff}</td>`:'<td style="color:#ccc">-</td>';
     return `<table class="sc-tbl"><thead><tr><th></th>${nums}<th></th></tr></thead>
       <tbody>
         <tr class="par-row"><td>Par</td>${prow}<td>${halfPar}</td></tr>
-        <tr><td></td>${srow}${totTxt}</tr>
+        <tr><td style="font-size:9px;color:#999">${roundLabel}</td>${srow}${totTxt}</tr>
       </tbody></table>`;
   }
-  const maxHole=Math.max(...p.holes.map(h=>h.hole));
-  let out=`<div class="sc-half-title">Front 9</div>${half(1,9)}`;
-  if(maxHole>9) out+=`<div class="sc-half-title" style="margin-top:10px">Back 9</div>${half(10,18)}`;
+  const maxHole=Math.max(...p.holes.entries.map(h=>h.hole));
+  let out=`<div class='sc-half-title'>Front 9</div>${half(1,9)}`;
+  if(maxHole>9) out+=`<div class='sc-half-title' style='margin-top:10px'>Back 9</div>${half(10,18)}`;
   return out;
 }
 
@@ -570,14 +1125,16 @@ function renderESPN(pl){
     const thruTxt = p.cut?'<span class="fin" style="color:var(--over)">CUT</span>':p.thru==='F'?'<span class="fin">F</span>':p.teeTime?`<span class="tee-time">${p.thru}</span>`:p.thru||'--';
     const posNum=parseInt((p.pos||'').replace(/[^0-9]/g,''));
     const espnArr=espnArrows[p.name];
-    const espnArrHtml=espnArr?`<span class="pos-arrow" style="color:${espnArr==='up'?'#1a6b3a':'#b83232'}">${espnArr==='up'?'▲':'▼'}</span>`:``
-    return `<tr ${dimmed?'style="opacity:.55"':''}>
+    const espnArrHtml=espnArr?`<span class="pos-arrow" style="color:${espnArr==='up'?'#1a6b3a':'#b83232'}">${espnArr==='up'?'▲':'▼'}</span>`:'';
+    const isExpanded=expandedPlayer===p.name;
+    const expandRow=isExpanded?`<tr class="sc-expand"><td colspan="5"><div class="sc-wrap">${buildScorecard(p)}</div></td></tr>`:'';
+    return `<tr ${dimmed?'style="opacity:.55"':''} style="cursor:pointer" onclick="toggleScorecard(this)" data-player-name="${p.name}">
       <td class="e-pos" data-pos-name="${p.name}" data-pos-val="${posNum||9999}">${p.pos}${espnArrHtml}</td>
       <td class="e-name">${shortName(p.name)}</td>
       <td class="e-score" data-score-name="${p.name}" data-score-val="${p.score}">${fmtScore(p.score)}</td>
       <td class="e-thru">${thruTxt}</td>
       <td class="e-today">${fmtToday(p)}</td>
-    </tr>`;
+    </tr>${expandRow}`;
   }
   let rows='';
   if(r2Complete){
@@ -622,6 +1179,12 @@ function renderESPN(pl){
     <div id="refresh-counter" style="text-align:center;font-size:10px;color:#bbb;margin-top:8px;padding-bottom:4px">↻ refreshed ${refreshCount} ${refreshCount===1?'time':'times'} by all visitors</div>`;
 }
 
+function toggleScorecard(el){
+  const name=el.dataset.playerName;
+  expandedPlayer=expandedPlayer===name?null:name;
+  if(window._lastPlayers) renderESPN(window._lastPlayers);
+}
+
 function showTab(id,btn){
   document.querySelectorAll('.sec').forEach(s=>s.classList.remove('on'));
   document.querySelectorAll('.tab').forEach(b=>b.classList.remove('on'));
@@ -637,7 +1200,8 @@ function switchToTeam(i){
 // ─── FETCH ────────────────────────────────────────────────────────────────────
 // Store previous scores and positions to detect changes
 let prevScores={};
-let prevESPNPos={};   // ESPN player positions
+let prevESPNPos={};
+let expandedPlayer=null;   // ESPN player positions
 let prevLBPos={};     // Leaderboard team positions
 let espnArrows={};    // name -> 'up'|'down'
 let lbArrows={};      // team name -> 'up'|'down'
@@ -663,7 +1227,7 @@ function updateRefreshCounter(n){
   if(el) el.textContent=`↻ refreshed ${n} ${n===1?'time':'times'} by all visitors`;
 }
 
-const ESPN_API='https://site.api.espn.com/apis/site/v2/sports/golf/leaderboard?event=401811941';
+const ESPN_API='https://site.api.espn.com/apis/site/v2/sports/golf/pga/scoreboard?event=401703511';
 
 async function fetchAndRender(){
   const dot =document.getElementById('dot');
@@ -701,8 +1265,8 @@ async function fetchAndRender(){
         window._refreshCount=newCount;
         updateRefreshCounter(newCount);
       }catch(e){
-        const fb=(parseInt(localStorage.getItem('masterRefreshCount')||'0'))+1;
-        localStorage.setItem('masterRefreshCount',fb);
+        const fb=(parseInt(localStorage.getItem('pgaRefreshCount')||'0'))+1;
+        localStorage.setItem('pgaRefreshCount',fb);
         window._refreshCount=fb;
         updateRefreshCounter(fb);
       }
@@ -754,13 +1318,79 @@ async function fetchAndRender(){
     stat.innerHTML='⚠️ Live fetch failed · Showing last known scores';
     document.getElementById('foot').innerHTML='Could not reach ESPN · Showing snapshot · Try refreshing later';
     window._lastPlayers=FALLBACK;
-    renderLB(FALLBACK);
-    renderTeams(FALLBACK);
-    renderESPN(FALLBACK);
+    // Split fallback into active/_cut for proper rendering
+    const fbActive=FALLBACK.filter(p=>!p.cut);
+    const fbCut=FALLBACK.filter(p=>p.cut);
+    fbActive._cut=fbCut;
+    renderLB(fbActive);
+    renderTeams(fbActive);
+    renderESPN(fbActive);
   }
 }
 
-fetchAndRender();
+
+
+// ── ROUTER ────────────────────────────────────────────────────────────────────
+const TEAMS_CACHE_KEY='pgaTeams2026';
+
+async function loadTeamsFromBin(){
+  // If TEAMS has real data (more than 1 team, or first team isn't 'Example'),
+  // use the constant as-is — no need to check jsonbin.
+  if(TEAMS.length>1 || TEAMS[0]?.name!=='Example'){
+    console.log(`Using ${TEAMS.length} hardcoded teams`);
+    return true;
+  }
+  // Only the example team — fetch real teams from jsonbin
+  console.log('Only example team found — fetching from jsonbin…');
+  try{
+    const r=await fetch(`https://api.jsonbin.io/v3/b/${ROUTER_BIN}/latest`,{headers:{'X-Master-Key':ROUTER_KEY}});
+    const json=await r.json();
+    const teams=json.record?.teams||{};
+    const entries=Object.entries(teams);
+    if(!entries.length) return false;
+    const loaded=entries.map(([name,team])=>({name,stars:0,picks:team.picks||[]}));
+    TEAMS.length=0; loaded.forEach(t=>TEAMS.push(t));
+    console.log(`Loaded ${TEAMS.length} teams from jsonbin`);
+    return true;
+  }catch(e){
+    console.warn('Could not load teams from jsonbin');
+    return false;
+  }
+}
+
+function showPage(page){
+  document.getElementById('page-loading').style.display='none';
+  if(page==='select'){
+    document.getElementById('page-select').style.display='block';
+    document.body.style.background='#f5f3ee';
+    updateBudget(); updateSlots(); updateSubmit(); render();
+
+  }else{
+    document.getElementById('page-pga').style.display='block';
+    document.body.style.background='#f4f2ed';
+    (async()=>{await loadTeamsFromBin();fetchAndRender();})();
+  }
+}
+
+async function route(){
+  // If real teams are hardcoded, event has started — no need to check jsonbin
+  const teamsAreReal = TEAMS.length>1 || TEAMS[0]?.name!=='Example';
+  if(teamsAreReal){showPage('pga');return;}
+  // Only example team — check jsonbin for event status
+  // Note: file:// can't reach jsonbin, so always shows select when testing locally
+  if(location.protocol==='file:'){
+    // Uncomment below to force PGA page when testing locally:
+     showPage('pga'); return;
+    //showPage('select');return;
+  }
+  try{
+    const r=await fetch(`https://api.jsonbin.io/v3/b/${ROUTER_BIN}/latest`,{headers:{'X-Master-Key':ROUTER_KEY}});
+    const d=await r.json();
+    if(d.record?.eventStarted){showPage('pga');}
+    else showPage('select');
+  }catch(e){showPage('select');}
+}
+route();
 </script>
 </body>
 </html>

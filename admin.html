@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<title>Admin · PGA Fantasy 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@500;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#0a1628;--navy-mid:#162240;--navy-light:#1e3058;
+  --gold:#c9a84c;--gold-light:#f0d080;
+  --green:#1a6b3a;--green-bg:#e5f3ec;
+  --red:#b83232;--red-bg:#fdecea;
+  --text:#1c1c1c;--text-mid:#5a5a5a;--text-soft:#999;
+  --border:#e2e2e2;--bg:#f5f3ee;--white:#fff;
+  --radius:12px;
+}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+
+/* ── LOGIN ── */
+.login{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px}
+.login-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:32px 24px;max-width:340px;width:100%;text-align:center}
+.login-title{font-family:'EB Garamond',serif;font-size:24px;color:var(--navy);margin-bottom:4px}
+.login-sub{font-size:12px;color:var(--text-soft);margin-bottom:24px}
+.login-input{width:100%;padding:11px 14px;border:1px solid var(--border);border-radius:8px;font-size:16px;font-family:'DM Sans',sans-serif;text-align:center;letter-spacing:4px;outline:none;margin-bottom:12px}
+.login-input:focus{border-color:var(--navy-light)}
+.login-btn{width:100%;padding:12px;background:var(--navy);color:var(--gold-light);font-family:'EB Garamond',serif;font-size:18px;border:none;border-radius:8px;cursor:pointer}
+.login-err{font-size:12px;color:var(--red);margin-top:8px;display:none}
+
+/* ── HEADER ── */
+.hd{background:var(--navy);padding:16px;text-align:center}
+.hd h1{font-family:'EB Garamond',serif;font-size:20px;color:var(--gold-light)}
+.hd-sub{font-size:11px;color:rgba(255,255,255,.35);margin-top:2px}
+
+/* ── MAIN ── */
+.main{max-width:600px;margin:0 auto;padding:16px 12px 40px}
+
+/* ── EVENT TOGGLE ── */
+.event-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.event-label{font-size:15px;font-weight:600;color:var(--text)}
+.event-sub{font-size:12px;color:var(--text-soft);margin-top:2px}
+.toggle{position:relative;width:52px;height:28px;flex-shrink:0}
+.toggle input{opacity:0;width:0;height:0}
+.toggle-slider{position:absolute;inset:0;background:#ddd;border-radius:14px;cursor:pointer;transition:.3s}
+.toggle-slider:before{content:'';position:absolute;width:22px;height:22px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.3s}
+input:checked + .toggle-slider{background:var(--green)}
+input:checked + .toggle-slider:before{transform:translateX(24px)}
+.event-status{font-size:12px;font-weight:600;padding:4px 10px;border-radius:20px;margin-left:8px}
+.status-pre{background:#fff8e6;color:#8a6200}
+.status-live{background:var(--green-bg);color:var(--green)}
+
+/* ── TEAMS ── */
+.section-title{font-size:11px;font-weight:600;color:var(--text-soft);letter-spacing:.5px;text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between}
+.team-count{background:var(--navy);color:var(--gold-light);font-size:11px;padding:2px 8px;border-radius:10px;font-family:'DM Sans',sans-serif;font-weight:500;letter-spacing:0}
+.teams-list{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:16px}
+.team-row{border-bottom:1px solid #f0f0f0;padding:12px 16px}
+.team-row:last-child{border-bottom:none}
+.team-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.team-name{font-size:15px;font-weight:600;color:var(--text)}
+.team-meta{font-size:11px;color:var(--text-soft)}
+.team-picks{display:flex;flex-wrap:wrap;gap:4px}
+.pick-pill{font-size:11px;background:#f0f0f0;border-radius:4px;padding:3px 8px;color:var(--text-mid)}
+.team-cost{font-family:'EB Garamond',serif;font-size:16px;color:var(--navy);font-weight:600}
+.no-teams{padding:32px;text-align:center;color:var(--text-soft);font-size:13px}
+
+/* ── COPY CODE ── */
+.copy-btn{width:100%;padding:13px;background:var(--navy-mid);color:var(--gold-light);font-family:'EB Garamond',serif;font-size:17px;border:none;border-radius:var(--radius);cursor:pointer;margin-bottom:8px;transition:background .15s}
+.copy-btn:active{background:var(--navy)}
+.copy-hint{font-size:11px;color:var(--text-soft);text-align:center}
+
+/* ── REFRESH ── */
+.refresh-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.last-updated{font-size:11px;color:var(--text-soft)}
+.refresh-btn{font-size:12px;padding:5px 12px;background:var(--white);border:1px solid var(--border);border-radius:20px;cursor:pointer;color:var(--text-mid);font-family:'DM Sans',sans-serif}
+.refresh-btn:active{background:#f0f0f0}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--text);color:#fff;font-size:13px;padding:10px 18px;border-radius:20px;opacity:0;transition:all .3s;z-index:999;white-space:nowrap;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login" id="login-screen">
+  <div class="login-card">
+    <div class="login-title">Admin</div>
+    <div class="login-sub">PGA Championship Fantasy 2026</div>
+    <input class="login-input" id="pwd-input" type="password" placeholder="••••••" maxlength="20" onkeydown="if(event.key==='Enter')checkPwd()"/>
+    <button class="login-btn" onclick="checkPwd()">Enter →</button>
+    <div class="login-err" id="login-err">Incorrect password</div>
+  </div>
+</div>
+
+<!-- ADMIN UI (hidden until login) -->
+<div id="admin-ui" style="display:none">
+  <header class="hd">
+    <h1>PGA Fantasy · Admin</h1>
+    <div class="hd-sub">Aronimink GC · May 14–17, 2026</div>
+  </header>
+
+  <main class="main">
+    <!-- Event toggle -->
+    <div class="event-card">
+      <div>
+        <div class="event-label">Event status <span class="event-status status-pre" id="event-status-badge">Pre-event</span></div>
+        <div class="event-sub" id="event-sub-text">Team selection is open. Toggle to redirect users to live scoring.</div>
+      </div>
+      <label class="toggle">
+        <input type="checkbox" id="event-toggle" onchange="toggleEvent()"/>
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+
+    <!-- Teams -->
+    <div class="refresh-bar">
+      <div class="section-title" style="margin-bottom:0">Submitted teams <span class="team-count" id="team-count">0</span></div>
+      <button class="refresh-btn" onclick="loadData()">↻ Refresh</button>
+    </div>
+    <div class="last-updated" id="last-updated" style="margin-bottom:10px"></div>
+    <div class="teams-list" id="teams-list">
+      <div class="no-teams">Loading…</div>
+    </div>
+
+    <!-- Copy code -->
+    <button class="copy-btn" onclick="copyCode()">📋 Copy teams as JS code for pga2026.html</button>
+    <div class="copy-hint">Paste into the TEAMS array in pga2026.html before the event starts</div>
+  <button class="copy-btn" style="background:#6b2020;margin-top:8px" onclick="clearCache()">🗑 Clear local team cache (all browsers)</button>
+  <div class="copy-hint">Use if teams were updated after the event started</div>
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const BIN = '69de381d36566621a8b0f1ca';
+const KEY = '$2a$10$ZZYpFYGdNHFN29hcbu/zfO45tnNgkJaNRV8.qwVGvqFE8DRdFIBhy';
+const ADMIN_PWD = 'pga2026'; // change this to your preferred password
+
+let binData = {teams:{}, eventStarted:false};
+let lastUpdated = null;
+
+function checkPwd() {
+  const val = document.getElementById('pwd-input').value;
+  if(val === ADMIN_PWD) {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('admin-ui').style.display = 'block';
+    loadData();
+  } else {
+    document.getElementById('login-err').style.display = 'block';
+    document.getElementById('pwd-input').value = '';
+    document.getElementById('pwd-input').focus();
+  }
+}
+
+async function loadData() {
+  try {
+    const r = await fetch(`https://api.jsonbin.io/v3/b/${BIN}`, {
+      headers: {'X-Master-Key': KEY}
+    });
+    const json = await r.json();
+    binData = json.record || {teams:{}, eventStarted:false};
+    lastUpdated = new Date();
+    render();
+  } catch(e) {
+    showToast('Failed to load data');
+  }
+}
+
+async function toggleEvent() {
+  const newState = document.getElementById('event-toggle').checked;
+  const confirmed = newState
+    ? confirm('Start the event? Users will be redirected to the live scoring page.')
+    : confirm('End the event? Users will be redirected back to team selection.');
+  if(!confirmed) {
+    document.getElementById('event-toggle').checked = !newState;
+    return;
+  }
+  try {
+    binData.eventStarted = newState;
+    await fetch(`https://api.jsonbin.io/v3/b/${BIN}`, {
+      method: 'PUT',
+      headers: {'X-Master-Key': KEY, 'Content-Type': 'application/json', 'X-Bin-Versioning': 'false'},
+      body: JSON.stringify(binData)
+    });
+    render();
+    showToast(newState ? '🟢 Event started — users redirected to live scoring' : '⏸ Event paused — users back to team selection');
+  } catch(e) {
+    document.getElementById('event-toggle').checked = !newState;
+    binData.eventStarted = !newState;
+    showToast('Failed to update event status');
+  }
+}
+
+function render() {
+  // Event status
+  const started = binData.eventStarted;
+  document.getElementById('event-toggle').checked = started;
+  document.getElementById('event-status-badge').textContent = started ? 'Live' : 'Pre-event';
+  document.getElementById('event-status-badge').className = 'event-status ' + (started ? 'status-live' : 'status-pre');
+  document.getElementById('event-sub-text').textContent = started
+    ? 'Event is live. Users are being redirected to live scoring.'
+    : 'Team selection is open. Toggle to redirect users to live scoring.';
+
+  // Last updated
+  if(lastUpdated) {
+    document.getElementById('last-updated').textContent = `Last updated ${lastUpdated.toLocaleTimeString('en-GB', {hour:'2-digit',minute:'2-digit',second:'2-digit'})}`;
+  }
+
+  // Teams
+  const teams = binData.teams || {};
+  const entries = Object.entries(teams).sort((a,b) => new Date(b[1].submitted) - new Date(a[1].submitted));
+  document.getElementById('team-count').textContent = entries.length;
+
+  if(!entries.length) {
+    document.getElementById('teams-list').innerHTML = '<div class="no-teams">No teams submitted yet</div>';
+    return;
+  }
+
+  let html = '';
+  entries.forEach(([name, team]) => {
+    const dt = new Date(team.submitted);
+    const dateStr = dt.toLocaleDateString('en-GB', {day:'numeric',month:'short'}) + ' ' +
+                    dt.toLocaleTimeString('en-GB', {hour:'2-digit',minute:'2-digit'});
+    const pills = (team.picks||[]).map(p=>`<span class="pick-pill">${p}</span>`).join('');
+    html += `<div class="team-row">
+      <div class="team-hd">
+        <div>
+          <span class="team-name">${name}</span>
+          <span class="team-meta"> · submitted ${dateStr}</span>
+        </div>
+        <div class="team-cost">£${(team.spent||0).toFixed(1)}m</div>
+      </div>
+      <div class="team-picks">${pills}</div>
+    </div>`;
+  });
+  document.getElementById('teams-list').innerHTML = html;
+}
+
+function copyCode() {
+  const teams = binData.teams || {};
+  const entries = Object.entries(teams);
+  if(!entries.length) { showToast('No teams to copy'); return; }
+
+  // Generate TEAMS array JS code matching pga2026.html format
+  // Use latest submission per name (already stored as latest)
+  // Stars default to 0 — can be set manually
+  const lines = entries.map(([name, team]) => {
+    const picks = (team.picks||[]).map(p=>`'${p}'`).join(',');
+    return `  { name:'${name}', stars:0, picks:[${picks}] },`;
+  });
+
+  const code = `const TEAMS = [\n${lines.join('\n')}\n];`;
+  navigator.clipboard.writeText(code).then(()=>{
+    showToast(`✓ Copied ${entries.length} teams to clipboard`);
+  }).catch(()=>{
+    // Fallback: show in prompt
+    prompt('Copy this code:', code);
+  });
+}
+
+function clearCache() {
+  if(!confirm('Clear local cache on THIS device? Teams and event status will reload from jsonbin on next visit.')) return;
+  localStorage.removeItem('pgaTeams2026');
+  localStorage.removeItem('pgaEventStarted2026');
+  showToast('✓ Cache cleared — reload the scoring page to re-fetch from jsonbin');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show';
+  clearTimeout(t._t);
+  t._t = setTimeout(()=>t.className='toast', 2800);
+}
+
+// Auto-refresh every 30s
+setInterval(loadData, 30000);
+</script>
+</body>
+</html>
