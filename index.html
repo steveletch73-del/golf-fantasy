@@ -1336,28 +1336,58 @@ async function fetchAndRender(){
 const TEAMS_CACHE_KEY='pgaTeams2026';
 
 async function loadTeamsFromBin(){
-  // If TEAMS has real data (more than 1 team, or first team isn't 'Example'),
-  // use the constant as-is — no need to check jsonbin.
+  // If real teams are hardcoded, use them — instant, no network call
   if(TEAMS.length>1 || TEAMS[0]?.name!=='Example'){
     console.log(`Using ${TEAMS.length} hardcoded teams`);
     return true;
   }
-  // Only the example team — fetch real teams from jsonbin
-  console.log('Only example team found — fetching from jsonbin…');
+  // Check localStorage cache first — avoids jsonbin round-trip on repeat visits
   try{
-    const r=await fetch(`https://api.jsonbin.io/v3/b/${ROUTER_BIN}/latest`,{headers:{'X-Master-Key':ROUTER_KEY}});
+    const cached=localStorage.getItem(TEAMS_CACHE_KEY);
+    if(cached){
+      const parsed=JSON.parse(cached);
+      if(parsed.length>0 && parsed[0]?.name!=='Example'){
+        TEAMS.length=0; parsed.forEach(t=>TEAMS.push(t));
+        console.log(`Loaded ${TEAMS.length} teams from cache`);
+        // Refresh cache from jsonbin in background (no await — don't block load)
+        _refreshTeamsCache();
+        return true;
+      }
+    }
+  }catch(e){}
+  // No cache — fetch from jsonbin with 4s timeout
+  console.log('Fetching teams from jsonbin…');
+  try{
+    const ctrl=new AbortController();
+    const tid=setTimeout(()=>ctrl.abort(),4000);
+    const r=await fetch(`https://api.jsonbin.io/v3/b/${ROUTER_BIN}/latest`,{
+      headers:{'X-Master-Key':ROUTER_KEY}, signal:ctrl.signal
+    });
+    clearTimeout(tid);
     const json=await r.json();
     const teams=json.record?.teams||{};
     const entries=Object.entries(teams);
     if(!entries.length) return false;
     const loaded=entries.map(([name,team])=>({name,stars:0,picks:team.picks||[]}));
     TEAMS.length=0; loaded.forEach(t=>TEAMS.push(t));
+    try{localStorage.setItem(TEAMS_CACHE_KEY,JSON.stringify(loaded));}catch(e){}
     console.log(`Loaded ${TEAMS.length} teams from jsonbin`);
     return true;
   }catch(e){
-    console.warn('Could not load teams from jsonbin');
+    console.warn('jsonbin timeout or error — using example team');
     return false;
   }
+}
+
+async function _refreshTeamsCache(){
+  try{
+    const r=await fetch(`https://api.jsonbin.io/v3/b/${ROUTER_BIN}/latest`,{headers:{'X-Master-Key':ROUTER_KEY}});
+    const json=await r.json();
+    const entries=Object.entries(json.record?.teams||{});
+    if(!entries.length) return;
+    const loaded=entries.map(([name,team])=>({name,stars:0,picks:team.picks||[]}));
+    localStorage.setItem(TEAMS_CACHE_KEY,JSON.stringify(loaded));
+  }catch(e){}
 }
 
 function showPage(page){
@@ -1375,22 +1405,10 @@ function showPage(page){
 }
 
 async function route(){
-  // If real teams are hardcoded, event has started — no need to check jsonbin
+  // Real teams hardcoded = event live, go to scoring page (instant, no network)
+  // Example team only = pre-event, show team selection (instant, no network)
   const teamsAreReal = TEAMS.length>1 || TEAMS[0]?.name!=='Example';
-  if(teamsAreReal){showPage('pga');return;}
-  // Only example team — check jsonbin for event status
-  // Note: file:// can't reach jsonbin, so always shows select when testing locally
-  if(location.protocol==='file:'){
-    // Uncomment below to force PGA page when testing locally:
-     showPage('pga'); return;
-    //showPage('select');return;
-  }
-  try{
-    const r=await fetch(`https://api.jsonbin.io/v3/b/${ROUTER_BIN}/latest`,{headers:{'X-Master-Key':ROUTER_KEY}});
-    const d=await r.json();
-    if(d.record?.eventStarted){showPage('pga');}
-    else showPage('select');
-  }catch(e){showPage('select');}
+  showPage(teamsAreReal ? 'pga' : 'select');
 }
 route();
 </script>
