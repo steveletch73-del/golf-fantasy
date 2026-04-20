@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<title>Past Champions · PGA Fantasy</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#0a1628;--navy-mid:#162240;--navy-light:#1e3058;
+  --gold:#c9a84c;--gold-light:#f0d080;
+  --green:#1a6b3a;--green-dark:#0d3820;--green-bg:#e5f3ec;
+  --red:#b83232;--red-bg:#fdecea;
+  --text:#1c1c1c;--text-mid:#5a5a5a;--text-soft:#999;
+  --border:#e2e2e2;--bg:#f5f3ee;--white:#fff;
+  --radius:12px;
+}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased}
+
+/* HEADER */
+.hd{background:var(--navy);padding:28px 16px 0;text-align:center;position:sticky;top:0;z-index:100;box-shadow:0 2px 20px rgba(0,0,0,.4)}
+.hd-icon{margin-bottom:10px}.hd-icon svg{display:block;margin:0 auto}
+.hd h1{font-family:'EB Garamond',Georgia,serif;font-size:26px;font-weight:600;color:var(--gold-light)}
+.hd-sub{font-size:11px;color:rgba(255,255,255,.4);margin-top:4px;letter-spacing:.4px;text-transform:uppercase;margin-bottom:14px}
+
+/* TABS */
+.tabs{display:flex;border-top:1px solid rgba(255,255,255,.08)}
+.tab{flex:1;padding:11px 4px;font-size:13px;font-weight:500;font-family:'DM Sans',sans-serif;background:transparent;border:none;border-bottom:3px solid transparent;color:rgba(255,255,255,.45);cursor:pointer;transition:all .2s;-webkit-tap-highlight-color:transparent}
+.tab.on{color:var(--gold-light);border-bottom-color:var(--gold)}
+
+/* SECTIONS */
+.sec{display:none}.sec.on{display:block}
+.main{max-width:500px;margin:0 auto;padding:20px 12px 48px}
+
+/* SHARED CARD */
+.card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:0 1px 6px rgba(0,0,0,.05);margin-bottom:10px}
+.card-hd{background:var(--navy);padding:11px 16px;font-family:'EB Garamond',Georgia,serif;font-size:16px;font-weight:600;color:var(--gold-light)}
+
+/* WINS */
+.wins-row{display:flex;align-items:center;justify-content:space-between;padding:11px 16px;border-bottom:1px solid #f0f0f0}
+.wins-row:last-child{border-bottom:none}
+.wins-name{font-size:14px;font-weight:600}
+.wins-right{display:flex;align-items:center;gap:6px}
+.win-pip{font-size:14px;line-height:1}
+.wins-count{font-family:'EB Garamond',Georgia,serif;font-size:20px;font-weight:600;color:var(--navy);min-width:22px;text-align:right}
+
+/* PODIUM */
+.podium-row{display:flex;align-items:center;gap:10px;padding:9px 16px;border-bottom:1px solid #f3f3f3}
+.podium-row:last-child{border-bottom:none}
+.podium-name{font-size:13px;font-weight:600;width:72px;flex-shrink:0}
+.podium-bars{flex:1;display:flex;gap:2px;align-items:center;height:18px}
+.p-seg{height:100%;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:rgba(0,0,0,.5);min-width:18px}
+.p-gold{background:#f0d080}.p-silver{background:#c8c8c8}.p-bronze{background:#d4956a}
+.podium-total{font-family:'EB Garamond',Georgia,serif;font-size:16px;font-weight:600;color:var(--text-mid);min-width:18px;text-align:right}
+.legend-strip{display:flex;gap:14px;padding:0 2px;margin-bottom:20px}
+.lstrip-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text-soft)}
+.lstrip-dot{width:9px;height:9px;border-radius:50%}
+
+/* SIZE 13s */
+.spoon-row{display:flex;align-items:center;justify-content:space-between;padding:11px 16px;border-bottom:1px solid #f0f0f0}
+.spoon-row:last-child{border-bottom:none}
+.spoon-name{font-size:14px;font-weight:600}
+.spoon-right{display:flex;align-items:center;gap:4px}
+.spoon-pip{font-size:12px;line-height:1}
+.spoon-count{font-family:'EB Garamond',Georgia,serif;font-size:20px;font-weight:600;color:var(--text-mid);min-width:22px;text-align:right;margin-left:4px}
+.spoon-card-hd{background:#3a1a0a;padding:11px 16px;font-family:'EB Garamond',Georgia,serif;font-size:16px;font-weight:600;color:#e8c49a}
+
+/* RESULTS */
+.year-label{font-family:'EB Garamond',Georgia,serif;font-size:13px;font-weight:600;color:var(--gold);letter-spacing:2px;text-transform:uppercase;padding:0 2px 8px;border-bottom:1px solid rgba(201,168,76,.25);margin-bottom:12px;margin-top:28px}
+.year-label:first-child{margin-top:0}
+.champ-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:10px;box-shadow:0 1px 6px rgba(0,0,0,.05)}
+.champ-trigger{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;-webkit-tap-highlight-color:transparent;user-select:none}
+.champ-trophy{font-size:22px;flex-shrink:0}
+.champ-info{flex:1;min-width:0}
+.champ-event{font-family:'EB Garamond',Georgia,serif;font-size:17px;font-weight:600;color:var(--navy)}
+.champ-winner-row{display:flex;align-items:center;gap:6px;margin-top:4px}
+.champ-winner{font-size:13px;font-weight:600;color:var(--green)}
+.champ-score{font-family:'EB Garamond',Georgia,serif;font-size:14px;font-weight:600;color:var(--green)}
+.champ-chevron{flex-shrink:0;width:20px;height:20px;display:flex;align-items:center;justify-content:center;color:var(--text-soft);transition:transform .25s}
+.champ-card.open .champ-chevron{transform:rotate(180deg)}
+.champ-detail{max-height:0;overflow:hidden;transition:max-height .3s ease}
+.champ-card.open .champ-detail{max-height:800px}
+.detail-inner{border-top:1px solid #f0f0f0;background:#fafaf8;padding:4px 0 8px}
+.result-row{display:grid;grid-template-columns:28px 1fr auto auto;align-items:center;gap:6px;padding:9px 16px;border-bottom:1px solid #f3f3f3}
+.result-row:last-child{border-bottom:none}
+.result-row.winner{background:linear-gradient(135deg,#f0faf4,#e5f3ec)}
+.result-row.loser{background:linear-gradient(135deg,#fdf3ee,#fff0eb)}
+.r-pos{font-size:12px;font-weight:600;color:var(--text-soft);text-align:center}
+.r-pos.gp{color:var(--gold);font-size:15px}
+.r-name{font-size:14px;font-weight:500}
+.result-row.winner .r-name{font-weight:600;color:var(--green)}
+.result-row.loser .r-name{font-weight:600;color:#8B4513}
+.r-bar-wrap{width:60px;display:flex;align-items:center;justify-content:flex-end}
+.r-bar{height:4px;border-radius:2px;min-width:2px}
+.r-bar.under{background:var(--green)}.r-bar.over{background:var(--red)}.r-bar.even{background:var(--text-soft)}
+.r-score{font-family:'EB Garamond',Georgia,serif;font-size:18px;font-weight:600;text-align:right;min-width:38px}
+.r-score.under{color:var(--green)}.r-score.over{color:var(--red)}.r-score.even{color:var(--text-mid)}
+</style>
+</head>
+<body>
+<header class="hd">
+  <div class="hd-icon">
+    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+      <path d="M8 4h16v14a8 8 0 01-16 0V4z" stroke="#c9a84c" stroke-width="1.5"/>
+      <path d="M8 8H4a4 4 0 004 4M24 8h4a4 4 0 01-4 4" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/>
+      <path d="M16 22v4M11 28h10" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/>
+      <circle cx="16" cy="13" r="3" fill="#c9a84c" opacity=".35"/>
+      <path d="M14 13l1.5 1.5L18.5 11" stroke="#f0d080" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </div>
+  <h1>Past Champions</h1>
+  <div class="hd-sub">All-time record · <a href="index.html" style="color:var(--gold);text-decoration:none">← Back</a></div>
+  <div class="tabs">
+    <button class="tab on" onclick="showTab('results',this)">📋 Results</button>
+    <button class="tab"    onclick="showTab('stats',this)">📊 Stats</button>
+  </div>
+</header>
+
+<main class="main">
+  <!-- RESULTS TAB -->
+  <div id="sec-results" class="sec on" id="sec-results"></div>
+
+  <!-- STATS TAB -->
+  <div id="sec-stats" class="sec"></div>
+</main>
+
+<script>
+const DATA=[
+  {event:'Masters 2026',year:2026,results:[{name:'Saunders',score:-11},{name:'Keith',score:-3},{name:'Purkis',score:6},{name:'Steve',score:7},{name:'Jack',score:8},{name:'Lecky',score:9},{name:'Josh',score:20},{name:'Lions',score:22},{name:'Fletcher',score:23}]},
+  {event:'The Open 2025',year:2025,results:[{name:'Steve',score:-9},{name:'Lions',score:-8},{name:'Lecky',score:-5},{name:'Purkis',score:1},{name:'Fletcher',score:2},{name:'Saunders',score:6},{name:'Josh',score:8},{name:'Keith',score:9}]},
+  {event:'US Open 2025',year:2025,results:[{name:'Lions',score:39},{name:'Fletcher',score:45},{name:'Steve',score:46},{name:'Saunders',score:49},{name:'Josh',score:52},{name:'Keith',score:54},{name:'Lecky',score:54},{name:'Purkis',score:54}]},
+  {event:'PGA 2025',year:2025,results:[{name:'Steve',score:-19},{name:'Fletcher',score:-13},{name:'Josh',score:4},{name:'Keith',score:6},{name:'Lions',score:13},{name:'Purkis',score:15},{name:'Lecky',score:19},{name:'Saunders',score:20}]},
+  {event:'Masters 2025',year:2025,results:[{name:'Saunders',score:-26},{name:'Fletcher',score:-23},{name:'Lecky',score:-4},{name:'Purkis',score:10},{name:'Steve',score:10},{name:'Josh',score:11},{name:'Keith',score:12},{name:'Lions',score:13}]},
+  {event:'The Open 2024',year:2024,results:[{name:'Saunders',score:-4},{name:'Lecky',score:18},{name:'Purkis',score:21},{name:'Lions',score:28},{name:'Fletcher',score:31},{name:'Steve',score:32},{name:'Keith',score:34}]},
+  {event:'PGA 2024',year:2024,results:[{name:'Saunders',score:-56},{name:'Lecky',score:-51},{name:'Lions',score:-43},{name:'Purkis',score:-23},{name:'Fletcher',score:-20},{name:'Steve',score:-18},{name:'Keith',score:13}]},
+  {event:'Masters 2024',year:2024,results:[{name:'Fletcher',score:13},{name:'Steve',score:16},{name:'Lecky',score:27},{name:'Lions',score:35},{name:'Purkis',score:38},{name:'Saunders',score:38},{name:'Keith',score:42}]},
+];
+
+function fmtScore(s){return s===0?'E':s>0?`+${s}`:String(s);}
+function scCls(s){return s<0?'under':s>0?'over':'even';}
+
+// ── STATS ──────────────────────────────────────────────────────────────────
+
+function renderWins(){
+  const counts={};
+  DATA.forEach(e=>{const w=e.results[0].name;counts[w]=(counts[w]||0)+1;});
+  const sorted=Object.entries(counts).sort((a,b)=>b[1]-a[1]);
+  const rows=sorted.map(([name,count])=>`
+    <div class="wins-row">
+      <span class="wins-name">${name}</span>
+      <div class="wins-right">
+        ${Array(count).fill(`<span class="win-pip">🏆</span>`).join('')}
+        <span class="wins-count">${count}</span>
+      </div>
+    </div>`).join('');
+  return`<div class="card"><div class="card-hd">🏆 All-time Wins</div>${rows}</div>`;
+}
+
+function podiums(name){
+  let g=0,s=0,b=0;
+  DATA.forEach(e=>{
+    const sorted=[...e.results].sort((a,b)=>a.score-b.score);
+    const p=sorted.findIndex(r=>r.name===name);
+    if(p===0)g++;else if(p===1)s++;else if(p===2)b++;
+  });
+  return{g,s,b,total:g+s+b};
+}
+
+function renderPodiums(){
+  const players=[...new Set(DATA.flatMap(e=>e.results.map(r=>r.name)))];
+  const data=players.map(n=>({name:n,...podiums(n)})).sort((a,b)=>b.total-a.total||(b.g-a.g));
+  const maxT=Math.max(...data.map(d=>d.total),1);
+  const rows=data.map(d=>{
+    const scale=160/maxT;
+    return`<div class="podium-row">
+      <div class="podium-name">${d.name}</div>
+      <div class="podium-bars">
+        ${d.g?`<div class="p-seg p-gold" style="width:${Math.max(d.g*scale,18)}px">${d.g}</div>`:''}
+        ${d.s?`<div class="p-seg p-silver" style="width:${Math.max(d.s*scale,18)}px">${d.s}</div>`:''}
+        ${d.b?`<div class="p-seg p-bronze" style="width:${Math.max(d.b*scale,18)}px">${d.b}</div>`:''}
+        ${!d.total?`<span style="font-size:11px;color:#ddd">—</span>`:''}
+      </div>
+      <div class="podium-total">${d.total||'—'}</div>
+    </div>`;
+  }).join('');
+  return`<div class="card"><div class="card-hd">🥇 Podium Finishes</div>${rows}</div>
+    <div class="legend-strip">
+      <div class="lstrip-item"><div class="lstrip-dot" style="background:#f0d080"></div>1st</div>
+      <div class="lstrip-item"><div class="lstrip-dot" style="background:#c8c8c8"></div>2nd</div>
+      <div class="lstrip-item"><div class="lstrip-dot" style="background:#d4956a"></div>3rd</div>
+    </div>`;
+}
+
+function renderSize13s(){
+  // Count last-place finishes — ties all count
+  const counts={};
+  const allPlayers=[...new Set(DATA.flatMap(e=>e.results.map(r=>r.name)))];
+  allPlayers.forEach(n=>counts[n]=0);
+
+  DATA.forEach(e=>{
+    const worstScore=Math.max(...e.results.map(r=>r.score));
+    e.results.filter(r=>r.score===worstScore).forEach(r=>{
+      counts[r.name]=(counts[r.name]||0)+1;
+    });
+  });
+
+  const sorted=Object.entries(counts).sort((a,b)=>b[1]-a[1]);
+  const rows=sorted.map(([name,count])=>`
+    <div class="spoon-row">
+      <span class="spoon-name">${name}</span>
+      <div class="spoon-right">
+        ${Array(count).fill(`<span class="spoon-pip">👢</span>`).join('')}
+        <span class="spoon-count">${count||'—'}</span>
+      </div>
+    </div>`).join('');
+  return`<div class="card"><div class="spoon-card-hd">👢 Size 13's</div>${rows}</div>`;
+}
+
+// ── RESULTS ────────────────────────────────────────────────────────────────
+
+function renderCard(ev,idx){
+  const winner=ev.results[0];
+  const maxAbs=Math.max(...ev.results.map(r=>Math.abs(r.score)),1);
+  // find worst score for tied-last detection
+  const worstScore=Math.max(...ev.results.map(r=>r.score));
+
+  const rows=ev.results.map((r,i)=>{
+    const cls=scCls(r.score);
+    const isWinner=i===0;
+    const isLoser=r.score===worstScore;
+    let rowCls='result-row';
+    if(isWinner) rowCls+=' winner';
+    else if(isLoser) rowCls+=' loser';
+
+    let posHtml;
+    if(isWinner) posHtml=`<div class="r-pos gp">🥇</div>`;
+    else if(i===1) posHtml=`<div class="r-pos">🥈</div>`;
+    else if(i===2) posHtml=`<div class="r-pos">🥉</div>`;
+    else if(isLoser) posHtml=`<div class="r-pos">👢</div>`;
+    else posHtml=`<div class="r-pos">${i+1}</div>`;
+
+    return`<div class="${rowCls}">
+      ${posHtml}
+      <div class="r-name">${r.name}</div>
+      <div class="r-bar-wrap"><div class="r-bar ${cls}" style="width:${Math.round(Math.abs(r.score)/maxAbs*56)}px"></div></div>
+      <div class="r-score ${cls}">${fmtScore(r.score)}</div>
+    </div>`;
+  }).join('');
+
+  return`<div class="champ-card" id="card-${idx}">
+    <div class="champ-trigger" onclick="toggle(${idx})">
+      <div class="champ-trophy">🏆</div>
+      <div class="champ-info">
+        <div class="champ-event">${ev.event}</div>
+        <div class="champ-winner-row"><span class="champ-winner">${winner.name}</span><span class="champ-score">${fmtScore(winner.score)}</span></div>
+      </div>
+      <div class="champ-chevron"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="4 6 8 10 12 6"/></svg></div>
+    </div>
+    <div class="champ-detail"><div class="detail-inner">${rows}</div></div>
+  </div>`;
+}
+
+function toggle(idx){document.getElementById('card-'+idx).classList.toggle('open');}
+
+// ── TAB SWITCHING ──────────────────────────────────────────────────────────
+
+function showTab(id, btn){
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('on'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
+  document.getElementById('sec-'+id).classList.add('on');
+  btn.classList.add('on');
+}
+
+// ── RENDER ─────────────────────────────────────────────────────────────────
+
+function render(){
+  // Results tab
+  let resultsHtml='';
+  const years=[...new Set(DATA.map(e=>e.year))];
+  let idx=0;
+  years.forEach(year=>{
+    resultsHtml+=`<div class="year-label">${year}</div>`;
+    DATA.filter(e=>e.year===year).forEach(ev=>{resultsHtml+=renderCard(ev,idx++);});
+  });
+  document.getElementById('sec-results').innerHTML=resultsHtml;
+
+  // Stats tab
+  let statsHtml='';
+  statsHtml+=renderWins();
+  statsHtml+=renderPodiums();
+  statsHtml+=renderSize13s();
+  document.getElementById('sec-stats').innerHTML=statsHtml;
+}
+
+render();
+</script>
+</body>
+</html>
