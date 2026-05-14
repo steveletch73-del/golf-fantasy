@@ -878,42 +878,89 @@ function parseESPNJson(data){
       let teeTime=null;
       const statusType=c.status?.type?.name||'';
       const compCompleted=compStatus?.type?.completed===true||compStatus?.type?.name==='STATUS_FINAL';
+
+      // Extract tee time from any available source, including the buried
+      // linescores[n].statistics.categories[0].stats[6].displayValue format
+      // e.g. "Thu May 14 06:45:00 PDT 2026"
+      const extractTeeTime=()=>{
+        const direct=c.teeTime||c.startTime||c.status?.teeTime||c.status?.startTime||null;
+        if(direct) return toUKTime(direct);
+        // Search all linescores' statistics for a date string
+        for(const ls of (Array.isArray(c.linescores)?c.linescores:[])){
+          const cats=ls?.statistics?.categories||[];
+          for(const cat of cats){
+            for(const stat of (cat.stats||[])){
+              const dv=stat.displayValue||'';
+              // Date strings contain month names or day names
+              if(/\b(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\b/.test(dv)){
+                // Replace named US timezones with their UTC offsets so Date() parses correctly
+                const normalized=dv
+                  .replace(/\bPDT\b/,'GMT-0400')
+                  .replace(/\bPST\b/,'GMT-0500')
+                  .replace(/\bMDT\b/,'GMT-0600')
+                  .replace(/\bMST\b/,'GMT-0700')
+                  .replace(/\bCDT\b/,'GMT-0500')
+                  .replace(/\bCST\b/,'GMT-0600')
+                  .replace(/\bEDT\b/,'GMT-0400')
+                  .replace(/\bEST\b/,'GMT-0500');
+                const d=new Date(normalized);
+                if(!isNaN(d)) return toUKTime(d.toISOString());
+              }
+            }
+          }
+        }
+        return null;
+      };
+
       if(statusType==='STATUS_FINISHED'||c.status?.completed===true){
         thru='F';
       } else if(c.status?.thru!=null && c.status.thru>0){
         thru=String(c.status.thru);
       } else if(completedLS.length>0){
         // Scoreboard endpoint: derive thru from completed linescores
-        // If completed rounds >= total rounds in competition, player is finished
         const totalRounds=compStatus?.period||4;
-        thru=(isCut||completedLS.length>=totalRounds)?'F':'--';
+        if(isCut){
+          thru='F';
+        } else if(completedLS.length>=totalRounds){
+          // All rounds have completed linescore entries — check if last round is fully done
+          const lastLS=completedLS[completedLS.length-1];
+          const holesInLastRound=Array.isArray(lastLS.linescores)?lastLS.linescores.length:0;
+          thru=holesInLastRound>=18?'F':holesInLastRound>0?String(holesInLastRound):'F';
+        } else {
+          // Player is mid-tournament: count holes in current (incomplete) round
+          const allLS=Array.isArray(c.linescores)?c.linescores:[];
+          const currentRoundLS=allLS.find(ls=>!(ls.displayValue&&ls.displayValue!=='-'&&(ls.value||0)>0));
+          const holesPlayed=Array.isArray(currentRoundLS?.linescores)?currentRoundLS.linescores.length:0;
+          if(holesPlayed>0){
+            thru=String(holesPlayed);
+          } else {
+            teeTime=extractTeeTime();
+            thru=teeTime||'--';
+          }
+        }
       } else if(compCompleted){
         thru='F';
       } else {
-        const rawTee=c.teeTime||c.startTime||c.status?.teeTime||c.status?.startTime||null;
-        teeTime=toUKTime(rawTee);
+        teeTime=extractTeeTime();
         thru=teeTime||'--';
       }
 
       // ── Today (current round score to par) ────────────────────────────────
-      // ESPN linescores[] has one entry per round, each with:
-      //   ls.value = raw strokes for THAT round only (e.g. 68, 74)
-      //   ls.displayValue = same as string
-      // Today = last linescore round strokes minus PAR(72).
-      // But we must verify ls.value is a single-round stroke total (60-90),
-      // NOT a cumulative total. If there are multiple linescores we can
-      // cross-check: sum of all should roughly equal overall strokes.
-      // Safest: today = scoreVal(overall) - sum of all PRIOR rounds' to-par.
       let today=null;
       const PAR=72;
 
       if(Array.isArray(c.linescores) && c.linescores.length){
-        // dv (displayValue) is already the to-par score for that round e.g. "E", "-4", "+4"
-        // Always use dv of the last linescore — it is today's round score to par
-        const lastLS=c.linescores[c.linescores.length-1];
-        const dv=String(lastLS.displayValue||'').trim();
-        const v=parseS(dv);
-        if(v!==null) today=v;
+        // Find the last linescore that actually has a displayValue (round score to par)
+        // The final entry may be an empty placeholder e.g. {"period":2} with no data
+        const lsWithData=[...c.linescores].reverse().find(ls=>{
+          const dv=String(ls.displayValue||'').trim();
+          return dv && dv!=='-' && dv!=='--';
+        });
+        if(lsWithData){
+          const dv=String(lsWithData.displayValue).trim();
+          const v=parseS(dv);
+          if(v!==null) today=v;
+        }
       }
 
       // Fallback: statistics entry that looks like a to-par value (E/+N/-N)
@@ -1123,13 +1170,12 @@ function buildScorecard(p){
     const par=HOLE_PARS[h.hole-1]??4;
     const d=h.score-par;
     const cls=d<=-2?'sc-eagle':d===-1?'sc-birdie':d===1?'sc-bogey':d>=2?'sc-double':'sc-par';
-    // Circle for birdie, square for bogey+, double-circle for eagle
-    let style='';
-    if(d<=-2) style='outline:2px solid #1a4fa0;outline-offset:1px;border-radius:50%;display:inline-block;width:18px;line-height:18px;';
-    else if(d===-1) style='border:1px solid #1a6b3a;border-radius:50%;display:inline-block;width:18px;line-height:18px;';
-    else if(d===1) style='border:1px solid #b83232;display:inline-block;width:18px;line-height:18px;';
-    else if(d>=2) style='border:2px solid #b83232;display:inline-block;width:18px;line-height:18px;';
-    return `<td class="${cls}"><span style="${style}">${h.score}</span></td>`;
+    let spanStyle='display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;';
+    if(d<=-2) spanStyle+='outline:2px solid #1a4fa0;outline-offset:1px;border-radius:50%;';
+    else if(d===-1) spanStyle+='border:1px solid #1a6b3a;border-radius:50%;';
+    else if(d===1) spanStyle+='border:1px solid #b83232;';
+    else if(d>=2) spanStyle+='border:2px solid #b83232;';
+    return `<td class="${cls}" style="width:30px;padding:3px 0"><span style="${spanStyle}">${h.score}</span></td>`;
   }
   function half(start,end){
     const entries=p.holes.entries.filter(h=>h.hole>=start&&h.hole<=end);
@@ -1138,9 +1184,9 @@ function buildScorecard(p){
     let nums='',prow='',srow='';
     for(let i=start;i<=end;i++){
       const h=entries.find(x=>x.hole===i);
-      nums+=`<th>${i}</th>`;
-      prow+=`<td>${HOLE_PARS[i-1]??4}</td>`;
-      srow+=h?hCell(h):'<td style="color:#ddd">·</td>';
+      nums+=`<th style="width:30px;padding:3px 0">${i}</th>`;
+      prow+=`<td style="width:30px;padding:3px 0">${HOLE_PARS[i-1]??4}</td>`;
+      srow+=h?hCell(h):'<td style="width:30px;padding:3px 0;color:#ddd">·</td>';
     }
     const played=entries.length;
     const tot=entries.reduce((s,h)=>s+h.score,0);
