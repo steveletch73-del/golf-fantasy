@@ -82,7 +82,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .champ-detail{max-height:0;overflow:hidden;transition:max-height .3s ease}
 .champ-card.open .champ-detail{max-height:800px}
 .detail-inner{border-top:1px solid #f0f0f0;background:#fafaf8;padding:4px 0 8px}
-.result-row{display:grid;grid-template-columns:28px 1fr auto auto;align-items:center;gap:6px;padding:9px 16px;border-bottom:1px solid #f3f3f3}
+.result-row{display:grid;grid-template-columns:28px 1fr auto auto;grid-template-rows:auto auto;align-items:center;gap:6px;padding:9px 16px 9px;border-bottom:1px solid #f3f3f3}
 .result-row:last-child{border-bottom:none}
 .result-row.winner{background:linear-gradient(135deg,#f0faf4,#e5f3ec)}
 .result-row.loser{background:linear-gradient(135deg,#fdf3ee,#fff0eb)}
@@ -96,6 +96,49 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .r-bar.under{background:var(--green)}.r-bar.over{background:var(--red)}.r-bar.even{background:var(--text-soft)}
 .r-score{font-family:'EB Garamond',Georgia,serif;font-size:18px;font-weight:600;text-align:right;min-width:38px}
 .r-score.under{color:var(--green)}.r-score.over{color:var(--red)}.r-score.even{color:var(--text-mid)}
+
+/* PLAYER NAME — clickable when picks exist */
+.r-name.has-picks{cursor:pointer;display:flex;align-items:center;gap:5px;user-select:none;-webkit-tap-highlight-color:transparent}
+.r-name.has-picks .r-chevron{font-size:11px;color:var(--text-soft);transition:transform .2s;display:inline-block}
+.r-name.has-picks.expanded .r-chevron{transform:rotate(90deg)}
+.r-name.has-picks:hover span{text-decoration:underline;text-underline-offset:2px}
+
+/* PICKS EXPANSION */
+.picks-wrap{grid-column:1/-1;overflow:hidden;max-height:0;transition:max-height .3s ease}
+.picks-wrap.open{max-height:400px}
+.picks-inner{padding:6px 16px 10px 36px;background:#f5f8f5;border-top:1px solid #eaeaea}
+.result-row.loser .picks-inner{background:#fdf5f0}
+.pick-row{display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:6px;padding:5px 0;border-bottom:1px solid rgba(0,0,0,.05)}
+.pick-row:last-child{border-bottom:none}
+.pick-golfer{font-size:12px;color:var(--text-mid)}
+.pick-bar-wrap{width:44px;display:flex;align-items:center;justify-content:flex-end}
+.pick-bar{height:3px;border-radius:2px;min-width:2px}
+.pick-bar.under{background:var(--green)}.pick-bar.over{background:var(--red)}.pick-bar.even{background:var(--text-soft)}
+.pick-score{font-family:'EB Garamond',Georgia,serif;font-size:14px;font-weight:600;min-width:32px;text-align:right}
+.pick-score.under{color:var(--green)}.pick-score.over{color:var(--red)}.pick-score.even{color:var(--text-mid)}
+
+/* POPULAR PICKS */
+.pop-legend{font-size:10px;color:var(--text-soft);text-transform:uppercase;letter-spacing:.5px;padding:6px 16px 2px;text-align:right}
+.pop-row{display:grid;grid-template-columns:22px 1fr auto auto auto;align-items:center;gap:6px;padding:8px 16px;border-bottom:1px solid #f3f3f3}
+.pop-row:last-child{border-bottom:none}
+.pop-rank{font-size:11px;color:var(--text-soft);font-weight:600;text-align:center}
+.pop-name{font-size:13px;font-weight:500}
+.pop-bar-wrap{width:84px;display:flex;align-items:center}
+.pop-bar{height:5px;border-radius:3px;background:var(--navy-light);min-width:4px}
+.pop-count{font-size:12px;font-weight:600;color:var(--text-mid);min-width:22px;text-align:right}
+.pop-avg{font-family:'EB Garamond',Georgia,serif;font-size:14px;font-weight:600;min-width:36px;text-align:right}
+.pop-avg.under{color:var(--green)}.pop-avg.over{color:var(--red)}.pop-avg.even{color:var(--text-mid)}
+.pop-row{cursor:pointer;-webkit-tap-highlight-color:transparent}
+.pop-row:hover .pop-name{text-decoration:underline;text-underline-offset:2px}
+.pop-row .pop-chevron{font-size:11px;color:var(--text-soft);transition:transform .2s;display:inline-block;margin-left:3px}
+.pop-row.expanded .pop-chevron{transform:rotate(90deg)}
+.pop-pickers-wrap{overflow:hidden;max-height:0;transition:max-height .3s ease;border-bottom:1px solid #f3f3f3}
+.pop-pickers-wrap.open{max-height:300px}
+.pop-pickers-inner{padding:6px 16px 8px 40px;background:#f8f7f4;display:flex;flex-wrap:wrap;gap:5px}
+.picker-chip{display:flex;align-items:center;gap:0;background:#fff;border:1px solid var(--border);border-radius:5px;overflow:hidden;font-size:12px}
+.picker-name{padding:3px 7px;font-weight:500}
+.picker-count{background:var(--navy-light);color:rgba(255,255,255,.8);font-size:11px;font-weight:600;padding:3px 6px}
+
 </style>
 </head>
 <body>
@@ -119,7 +162,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 
 <main class="main">
   <!-- RESULTS TAB -->
-  <div id="sec-results" class="sec on" id="sec-results"></div>
+  <div id="sec-results" class="sec on"></div>
 
   <!-- STATS TAB -->
   <div id="sec-stats" class="sec"></div>
@@ -127,14 +170,84 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 
 <script>
 const DATA=[
-  {event:'Masters 2026',year:2026,results:[{name:'Saunders',score:-11},{name:'Keith',score:-3},{name:'Purkis',score:6},{name:'Steve',score:7},{name:'Jack',score:8},{name:'Lecky',score:9},{name:'Josh',score:20},{name:'Lions',score:22},{name:'Fletcher',score:23}]},
-  {event:'The Open 2025',year:2025,results:[{name:'Steve',score:-9},{name:'Lions',score:-8},{name:'Lecky',score:-5},{name:'Purkis',score:1},{name:'Fletcher',score:2},{name:'Saunders',score:6},{name:'Josh',score:8},{name:'Keith',score:9}]},
-  {event:'US Open 2025',year:2025,results:[{name:'Lions',score:39},{name:'Fletcher',score:45},{name:'Steve',score:46},{name:'Saunders',score:49},{name:'Josh',score:52},{name:'Keith',score:54},{name:'Lecky',score:54},{name:'Purkis',score:54}]},
-  {event:'PGA 2025',year:2025,results:[{name:'Steve',score:-19},{name:'Fletcher',score:-13},{name:'Josh',score:4},{name:'Keith',score:6},{name:'Lions',score:13},{name:'Purkis',score:15},{name:'Lecky',score:19},{name:'Saunders',score:20}]},
-  {event:'Masters 2025',year:2025,results:[{name:'Saunders',score:-26},{name:'Fletcher',score:-23},{name:'Lecky',score:-4},{name:'Purkis',score:10},{name:'Steve',score:10},{name:'Josh',score:11},{name:'Keith',score:12},{name:'Lions',score:13}]},
-  {event:'The Open 2024',year:2024,results:[{name:'Saunders',score:-4},{name:'Lecky',score:18},{name:'Purkis',score:21},{name:'Lions',score:28},{name:'Fletcher',score:31},{name:'Steve',score:32},{name:'Keith',score:34}]},
-  {event:'PGA 2024',year:2024,results:[{name:'Saunders',score:-56},{name:'Lecky',score:-51},{name:'Lions',score:-43},{name:'Purkis',score:-23},{name:'Fletcher',score:-20},{name:'Steve',score:-18},{name:'Keith',score:13}]},
-  {event:'Masters 2024',year:2024,results:[{name:'Fletcher',score:13},{name:'Steve',score:16},{name:'Lecky',score:27},{name:'Lions',score:35},{name:'Purkis',score:38},{name:'Saunders',score:38},{name:'Keith',score:42}]},
+  {event:'Masters 2026',year:2026,results:[
+    {name:'Saunders',score:-11,picks:[{golfer:'Matt Fitzpatrick',score:-4},{golfer:'Viktor Hovland',score:-4},{golfer:'Tyrrell Hatton',score:-10},{golfer:'Brian Harman',score:0},{golfer:'Andrew Novak',score:7}]},
+    {name:'Keith',score:-3,picks:[{golfer:'Jon Rahm',score:1},{golfer:'Brooks Koepka',score:-5},{golfer:'Jason Day',score:-5},{golfer:'Alex Noren',score:-1},{golfer:'Tom Mckibbin',score:7}]},
+    {name:'Purkis',score:6,picks:[{golfer:'Ludvig Åberg',score:-3},{golfer:'Patrick Reed',score:-5},{golfer:'Jason Day',score:-5},{golfer:'Michael Kim',score:8},{golfer:'Johnny Keefer',score:11}]},
+    {name:'Steve',score:7,picks:[{golfer:'Ludvig Åberg',score:-3},{golfer:'Patrick Cantlay',score:-5},{golfer:'Cameron Smith',score:7},{golfer:'Dustin Johnson',score:0},{golfer:'Sergio García',score:8}]},
+    {name:'Jack',score:8,picks:[{golfer:'Jon Rahm',score:1},{golfer:'Jordan Spieth',score:-5},{golfer:'Sungjae Im',score:3},{golfer:'Ryan Gerard',score:1},{golfer:'Sergio García',score:8}]},
+    {name:'Lecky',score:9,picks:[{golfer:'Matt Fitzpatrick',score:-4},{golfer:'Patrick Reed',score:-5},{golfer:'Jacob Bridgeman',score:2},{golfer:'Harry Hall',score:5},{golfer:'Johnny Keefer',score:11}]},
+    {name:'Josh',score:20,picks:[{golfer:'Bryson DeChambeau',score:6},{golfer:'J.J. Spaun',score:5},{golfer:'Tyrrell Hatton',score:-10},{golfer:'Michael Kim',score:8},{golfer:'Carlos Ortiz',score:11}]},
+    {name:'Lions',score:22,picks:[{golfer:'Tommy Fleetwood',score:0},{golfer:'J.J. Spaun',score:5},{golfer:'Gary Woodland',score:0},{golfer:'Max Greyserman',score:12},{golfer:'Aaron Rai',score:5}]},
+    {name:'Fletcher',score:23,picks:[{golfer:'Bryson DeChambeau',score:6},{golfer:'Patrick Reed',score:-5},{golfer:'Nicolai Højgaard',score:6},{golfer:'Daniel Berger',score:8},{golfer:'Sergio García',score:8}]},
+  ]},
+  {event:'The Open 2025',year:2025,results:[
+    {name:'Steve',score:-9,picks:[{golfer:'Tommy Fleetwood',score:-7},{golfer:'Jordan Spieth',score:-2},{golfer:'Keegan Bradley',score:-4},{golfer:'Tom Kim',score:3},{golfer:'Tony Finau',score:1}]},
+    {name:'Lions',score:-8,picks:[{golfer:'Shane Lowry',score:-2},{golfer:'Harry Hall',score:-5},{golfer:'Brian Harman',score:-9},{golfer:'Tom McKibbin',score:3},{golfer:'Aldrich Potgieter',score:5}]},
+    {name:'Lecky',score:-5,picks:[{golfer:'Jon Rahm',score:-3},{golfer:'Russell Henley',score:-9},{golfer:'Marco Penge',score:4},{golfer:'Thriston Lawrence',score:-1},{golfer:'Thorbjørn Olesen',score:4}]},
+    {name:'Purkis',score:1,picks:[{golfer:'Robert MacIntyre',score:-10},{golfer:'Ryan Fox',score:2},{golfer:'Ben Griffin',score:2},{golfer:'Tom McKibbin',score:3},{golfer:'Thorbjørn Olesen',score:4}]},
+    {name:'Fletcher',score:2,picks:[{golfer:'Jon Rahm',score:-3},{golfer:'Russell Henley',score:-9},{golfer:'Nick Taylor',score:3},{golfer:'Andrew Novak',score:4},{golfer:'Daniel Brown',score:7}]},
+    {name:'Saunders',score:6,picks:[{golfer:'Shane Lowry',score:-2},{golfer:'Jordan Spieth',score:-2},{golfer:'Cameron Smith',score:8},{golfer:'Matt Wallace',score:-1},{golfer:'Carlos Ortiz',score:3}]},
+    {name:'Josh',score:8,picks:[{golfer:'Ludvig Åberg',score:-6},{golfer:'Ryan Fox',score:2},{golfer:'Cameron Smith',score:8},{golfer:'Andrew Novak',score:4},{golfer:'Sungjae Im',score:0}]},
+    {name:'Keith',score:9,picks:[{golfer:'Viktor Hovland',score:4},{golfer:'Adam Scott',score:9},{golfer:'Jason Day',score:2},{golfer:'Wyndham Clark',score:-11},{golfer:'Aldrich Potgieter',score:5}]},
+  ]},
+  {event:'US Open 2025',year:2025,results:[
+    {name:'Lions',score:39,picks:[{golfer:'Jon Rahm',score:4},{golfer:'Ben Griffin',score:5},{golfer:'Justin Rose',score:14},{golfer:'Thorbjørn Olesen',score:8},{golfer:'Max Greyserman',score:8}]},
+    {name:'Fletcher',score:45,picks:[{golfer:'Jon Rahm',score:4},{golfer:'Keegan Bradley',score:9},{golfer:'Wyndham Clark',score:8},{golfer:'Denny McCarthy',score:16},{golfer:'Matt Wallace',score:8}]},
+    {name:'Steve',score:46,picks:[{golfer:'Bryson DeChambeau',score:10},{golfer:'Corey Conners',score:8},{golfer:'Tony Finau',score:11},{golfer:'J.T. Poston',score:9},{golfer:'Matt Wallace',score:8}]},
+    {name:'Saunders',score:49,picks:[{golfer:'Bryson DeChambeau',score:10},{golfer:'Hideki Matsuyama',score:12},{golfer:'Min Woo Lee',score:9},{golfer:'Gary Woodland',score:10},{golfer:'Tom Hoge',score:8}]},
+    {name:'Josh',score:52,picks:[{golfer:'Bryson DeChambeau',score:10},{golfer:'Hideki Matsuyama',score:12},{golfer:'Cameron Smith',score:8},{golfer:'Tom Kim',score:9},{golfer:'Rasmus Højgaard',score:13}]},
+    {name:'Keith',score:54,picks:[{golfer:'Collin Morikawa',score:8},{golfer:'Corey Conners',score:8},{golfer:'Sungjae Im',score:16},{golfer:'Lucas Glover',score:8},{golfer:'Ryan Gerard',score:14}]},
+    {name:'Lecky',score:54,picks:[{golfer:'Bryson DeChambeau',score:10},{golfer:'Harris English',score:18},{golfer:'Cameron Young',score:3},{golfer:'Gary Woodland',score:10},{golfer:'Rasmus Højgaard',score:13}]},
+    {name:'Purkis',score:54,picks:[{golfer:'Bryson DeChambeau',score:10},{golfer:'Aaron Rai',score:9},{golfer:'Si Woo Kim',score:12},{golfer:'J.T. Poston',score:9},{golfer:'Ryan Gerard',score:14}]},
+  ]},
+  {event:'PGA 2025',year:2025,results:[
+    {name:'Steve',score:-19,picks:[{golfer:'Bryson DeChambeau',score:-6},{golfer:'Corey Conners',score:-2},{golfer:'Tony Finau',score:-2},{golfer:'Matt Fitzpatrick',score:-4},{golfer:'J.T. Poston',score:-5}]},
+    {name:'Fletcher',score:-13,picks:[{golfer:'Bryson DeChambeau',score:-6},{golfer:'Sepp Straka',score:2},{golfer:'Tony Finau',score:-2},{golfer:'Harris English',score:-6},{golfer:'Ryan Fox',score:-1}]},
+    {name:'Josh',score:4,picks:[{golfer:'Xander Schauffele',score:-1},{golfer:'Patrick Reed',score:4},{golfer:'Max Homa',score:6},{golfer:'Matt Fitzpatrick',score:-4},{golfer:'Ryan Fox',score:-1}]},
+    {name:'Keith',score:6,picks:[{golfer:'Justin Thomas',score:3},{golfer:'Patrick Reed',score:4},{golfer:'Cameron Young',score:3},{golfer:'Harris English',score:-6},{golfer:'Jake Knapp',score:2}]},
+    {name:'Lions',score:13,picks:[{golfer:'Justin Thomas',score:3},{golfer:'Sepp Straka',score:2},{golfer:'Akshay Bhatia',score:2},{golfer:'Thomas Detry',score:4},{golfer:'Nicolai Højgaard',score:2}]},
+    {name:'Purkis',score:15,picks:[{golfer:'Ludvig Åberg',score:3},{golfer:'Sepp Straka',score:2},{golfer:'Akshay Bhatia',score:2},{golfer:'Mackenzie Hughes',score:9},{golfer:'Ryan Fox',score:-1}]},
+    {name:'Lecky',score:19,picks:[{golfer:'Bryson DeChambeau',score:-6},{golfer:'Patrick Reed',score:4},{golfer:'Dustin Johnson',score:12},{golfer:'Rasmus Højgaard',score:7},{golfer:'Jake Knapp',score:2}]},
+    {name:'Saunders',score:20,picks:[{golfer:'Xander Schauffele',score:-1},{golfer:'Justin Rose',score:9},{golfer:'Robert MacIntyre',score:3},{golfer:'Andrew Novak',score:8},{golfer:'Lucas Glover',score:1}]},
+  ]},
+  {event:'Masters 2025',year:2025,results:[
+    {name:'Saunders',score:-26,picks:[{golfer:'Xander Schauffele',score:-5},{golfer:'Corey Conners',score:-5},{golfer:'Justin Rose',score:-11},{golfer:'Aaron Rai',score:-1},{golfer:'Max Homa',score:-4}]},
+    {name:'Fletcher',score:-23,picks:[{golfer:'Jon Rahm',score:-3},{golfer:'Corey Conners',score:-5},{golfer:'Justin Rose',score:-11},{golfer:'Aaron Rai',score:-1},{golfer:'Tom Hoge',score:-3}]},
+    {name:'Lecky',score:-4,picks:[{golfer:'Collin Morikawa',score:-3},{golfer:'Akshay Bhatia',score:4},{golfer:'Maverick McNealy',score:1},{golfer:'Byeong Hun An',score:-2},{golfer:'Harris English',score:-4}]},
+    {name:'Purkis',score:10,picks:[{golfer:'Collin Morikawa',score:-3},{golfer:'Russell Henley',score:5},{golfer:'Justin Rose',score:-11},{golfer:'Lucas Glover',score:10},{golfer:'Stephan Jaeger',score:9}]},
+    {name:'Steve',score:10,picks:[{golfer:'Collin Morikawa',score:-3},{golfer:'Cameron Smith',score:7},{golfer:'Adam Scott',score:7},{golfer:'Matt Fitzpatrick',score:3},{golfer:'Max Homa',score:-4}]},
+    {name:'Josh',score:11,picks:[{golfer:'Ludvig Åberg',score:-6},{golfer:'Cameron Smith',score:7},{golfer:'Dustin Johnson',score:5},{golfer:'Tom Kim',score:9},{golfer:'Max Homa',score:-4}]},
+    {name:'Keith',score:12,picks:[{golfer:'Collin Morikawa',score:-3},{golfer:'Russell Henley',score:5},{golfer:'Billy Horschel',score:7},{golfer:'J.J. Spaun',score:7},{golfer:'Harris English',score:-4}]},
+    {name:'Lions',score:13,picks:[{golfer:'Bryson DeChambeau',score:-7},{golfer:'Robert MacIntyre',score:8},{golfer:'Billy Horschel',score:7},{golfer:'Tom Kim',score:9},{golfer:'Max Homa',score:-4}]},
+  ]},
+  {event:'The Open 2024',year:2024,results:[
+    {name:'Saunders',score:-4,picks:[{golfer:'Xander Schauffele',score:-9},{golfer:'Sahith Theegala',score:14},{golfer:'Jordan Spieth',score:5},{golfer:'Justin Rose',score:-7},{golfer:'Billy Horschel',score:-7}]},
+    {name:'Lecky',score:18,picks:[{golfer:'Scottie Scheffler',score:-1},{golfer:'Adam Scott',score:0},{golfer:'Akshay Bhatia',score:7},{golfer:'Dean Burmester',score:3},{golfer:'Matthew Southgate',score:9}]},
+    {name:'Purkis',score:21,picks:[{golfer:'Xander Schauffele',score:-9},{golfer:'Tom Kim',score:11},{golfer:'Alex Noren',score:1},{golfer:'Rasmus Højgaard',score:11},{golfer:'Keegan Bradley',score:7}]},
+    {name:'Lions',score:28,picks:[{golfer:'Rory McIlroy',score:11},{golfer:'Sahith Theegala',score:14},{golfer:'Jason Day',score:1},{golfer:'Justin Rose',score:-7},{golfer:'Richard Mansell',score:9}]},
+    {name:'Fletcher',score:31,picks:[{golfer:'Rory McIlroy',score:11},{golfer:'Tom Kim',score:11},{golfer:'Corey Conners',score:5},{golfer:'Rasmus Højgaard',score:11},{golfer:'Billy Horschel',score:-7}]},
+    {name:'Steve',score:32,picks:[{golfer:'Collin Morikawa',score:2},{golfer:'Cameron Smith',score:12},{golfer:'Jordan Spieth',score:5},{golfer:'Dustin Johnson',score:6},{golfer:'Keegan Bradley',score:7}]},
+    {name:'Keith',score:34,picks:[{golfer:'Ludvig Åberg',score:9},{golfer:'Cameron Smith',score:12},{golfer:'Justin Thomas',score:6},{golfer:'Justin Rose',score:-7},{golfer:'Tiger Woods',score:14}]},
+  ]},
+  {event:'PGA 2024',year:2024,results:[
+    {name:'Saunders',score:-56,picks:[{golfer:'Xander Schauffele',score:-21},{golfer:'Justin Thomas',score:-13},{golfer:'Dustin Johnson',score:-6},{golfer:'Brian Harman',score:-9},{golfer:'Aaron Rai',score:-7}]},
+    {name:'Lecky',score:-51,picks:[{golfer:'Bryson DeChambeau',score:-20},{golfer:'Jason Day',score:-6},{golfer:'Tony Finau',score:-11},{golfer:'Nicolai Højgaard',score:-2},{golfer:'Taylor Moore',score:-12}]},
+    {name:'Lions',score:-43,picks:[{golfer:'Brooks Koepka',score:-9},{golfer:'Jason Day',score:-6},{golfer:'Dustin Johnson',score:-6},{golfer:'Tom Kim',score:-9},{golfer:'Billy Horschel',score:-13}]},
+    {name:'Purkis',score:-23,picks:[{golfer:'Brooks Koepka',score:-9},{golfer:'Cameron Smith',score:-3},{golfer:'Talor Gooch',score:-4},{golfer:'Tom Kim',score:-9},{golfer:'Ryan Fox',score:2}]},
+    {name:'Fletcher',score:-20,picks:[{golfer:'Brooks Koepka',score:-9},{golfer:'Cameron Young',score:-3},{golfer:'Sepp Straka',score:2},{golfer:'Keith Mitchell',score:0},{golfer:'Tom Hoge',score:-10}]},
+    {name:'Steve',score:-18,picks:[{golfer:'Jon Rahm',score:0},{golfer:'Cameron Smith',score:-3},{golfer:'Shane Lowry',score:-14},{golfer:'Rickie Fowler',score:-3},{golfer:'Ryan Fox',score:2}]},
+    {name:'Keith',score:13,picks:[{golfer:'Wyndham Clark',score:4},{golfer:'Matt Fitzpatrick',score:0},{golfer:'Sepp Straka',score:2},{golfer:'J.T. Poston',score:5},{golfer:'Jake Knapp',score:2}]},
+  ]},
+  {event:'Masters 2024',year:2024,results:[
+    {name:'Fletcher',score:13,picks:[{golfer:'Jon Rahm',score:9},{golfer:'Tommy Fleetwood',score:-4},{golfer:'Patrick Reed',score:1},{golfer:'Keegan Bradley',score:4},{golfer:'Taylor Moore',score:3}]},
+    {name:'Steve',score:16,picks:[{golfer:'Rory McIlroy',score:4},{golfer:'Tommy Fleetwood',score:-4},{golfer:'Patrick Reed',score:1},{golfer:'Bubba Watson',score:10},{golfer:'J.T. Poston',score:5}]},
+    {name:'Lecky',score:27,picks:[{golfer:'Brooks Koepka',score:9},{golfer:'Shane Lowry',score:8},{golfer:'Patrick Reed',score:1},{golfer:'Phil Mickelson',score:8},{golfer:'Cam Davis',score:1}]},
+    {name:'Lions',score:35,picks:[{golfer:'Wyndham Clark',score:7},{golfer:'Tony Finau',score:13},{golfer:'Akshay Bhatia',score:6},{golfer:'Sepp Straka',score:2},{golfer:'Austin Eckroat',score:7}]},
+    {name:'Purkis',score:38,picks:[{golfer:'Brooks Koepka',score:9},{golfer:'Jason Day',score:5},{golfer:'Sergio García',score:7},{golfer:'Keegan Bradley',score:4},{golfer:'Gary Woodland',score:13}]},
+    {name:'Saunders',score:38,picks:[{golfer:'Hideki Matsuyama',score:7},{golfer:'Sam Burns',score:9},{golfer:'Corey Conners',score:7},{golfer:'Chris Kirk',score:2},{golfer:'Gary Woodland',score:13}]},
+    {name:'Keith',score:42,picks:[{golfer:'Xander Schauffele',score:-1},{golfer:'Brian Harman',score:9},{golfer:'Si Woo Kim',score:5},{golfer:'Thorbjørn Olesen',score:14},{golfer:'Emiliano Grillo',score:15}]},
+  ]},
 ];
 
 function fmtScore(s){return s===0?'E':s>0?`+${s}`:String(s);}
@@ -240,11 +353,32 @@ function renderCard(ev,idx){
     else if(isLoser) posHtml=`<div class="r-pos">👢</div>`;
     else posHtml=`<div class="r-pos">${i+1}</div>`;
 
+    const hasPicks=r.picks&&r.picks.length;
+    const picksId=`picks-${idx}-${i}`;
+    const nameHtml=hasPicks
+      ?`<div class="r-name has-picks" onclick="togglePicks('${picksId}',this)"><span>${r.name}</span><span class="r-chevron">›</span></div>`
+      :`<div class="r-name">${r.name}</div>`;
+
+    let picksHtml='';
+    if(hasPicks){
+      const maxAbs=Math.max(...r.picks.map(p=>Math.abs(p.score)),1);
+      const pickRows=r.picks.map(p=>{
+        const pc=scCls(p.score);
+        return`<div class="pick-row">
+          <div class="pick-golfer">${p.golfer}</div>
+          <div class="pick-bar-wrap"><div class="pick-bar ${pc}" style="width:${Math.round(Math.abs(p.score)/maxAbs*40)}px"></div></div>
+          <div class="pick-score ${pc}">${fmtScore(p.score)}</div>
+        </div>`;
+      }).join('');
+      picksHtml=`<div class="picks-wrap" id="${picksId}"><div class="picks-inner">${pickRows}</div></div>`;
+    }
+
     return`<div class="${rowCls}">
       ${posHtml}
-      <div class="r-name">${r.name}</div>
+      ${nameHtml}
       <div class="r-bar-wrap"><div class="r-bar ${cls}" style="width:${Math.round(Math.abs(r.score)/maxAbs*56)}px"></div></div>
       <div class="r-score ${cls}">${fmtScore(r.score)}</div>
+      ${picksHtml}
     </div>`;
   }).join('');
 
@@ -263,6 +397,12 @@ function renderCard(ev,idx){
 
 function toggle(idx){document.getElementById('card-'+idx).classList.toggle('open');}
 
+function togglePicks(id, nameEl){
+  const wrap=document.getElementById(id);
+  const isOpen=wrap.classList.toggle('open');
+  nameEl.classList.toggle('expanded', isOpen);
+}
+
 // ── TAB SWITCHING ──────────────────────────────────────────────────────────
 
 function showTab(id, btn){
@@ -270,6 +410,49 @@ function showTab(id, btn){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
   document.getElementById('sec-'+id).classList.add('on');
   btn.classList.add('on');
+}
+
+function renderPopularPicks(){
+  const counts={};
+  DATA.forEach(e=>e.results.forEach(r=>{
+    if(!r.picks) return;
+    r.picks.forEach(p=>{
+      if(!counts[p.golfer]) counts[p.golfer]={picks:0,totalScore:0,pickers:{}};
+      counts[p.golfer].picks++;
+      counts[p.golfer].totalScore+=p.score;
+      counts[p.golfer].pickers[r.name]=(counts[p.golfer].pickers[r.name]||0)+1;
+    });
+  }));
+  const sorted=Object.entries(counts).sort((a,b)=>b[1].picks-a[1].picks||a[1].totalScore-b[1].totalScore).slice(0,20);
+  const max=sorted[0][1].picks;
+  const rows=sorted.map(([golfer,d],i)=>{
+    const avg=(d.totalScore/d.picks);
+    const avgCls=avg<0?'under':avg>0?'over':'even';
+    const avgStr=(avg>0?'+':'')+avg.toFixed(1);
+    const pickersHtml=Object.entries(d.pickers).sort((a,b)=>b[1]-a[1]).map(([name,n])=>`
+      <div class="picker-chip">
+        <span class="picker-name">${name}</span><span class="picker-count">${n}×</span>
+      </div>`).join('');
+    const id=`pop-${i}`;
+    return`<div class="pop-row" id="${id}" onclick="togglePop('${id}')">
+      <div class="pop-rank">${i+1}</div>
+      <div class="pop-name">${golfer}<span class="pop-chevron">›</span></div>
+      <div class="pop-bar-wrap"><div class="pop-bar" style="width:${Math.round(d.picks/max*80)}px"></div></div>
+      <div class="pop-count">${d.picks}×</div>
+      <div class="pop-avg ${avgCls}">${avgStr}</div>
+    </div>
+    <div class="pop-pickers-wrap" id="${id}-pickers"><div class="pop-pickers-inner">${pickersHtml}</div></div>`;
+  }).join('');
+  return`<div class="card">
+    <div class="card-hd">⛳ Most Picked Golfers</div>
+    <div class="pop-legend">picks &nbsp;·&nbsp; avg score</div>
+    ${rows}
+  </div>`;
+}
+
+function togglePop(id){
+  document.getElementById(id).classList.toggle('expanded');
+  document.getElementById(id+'-pickers').classList.toggle('open');
 }
 
 // ── RENDER ─────────────────────────────────────────────────────────────────
@@ -290,6 +473,7 @@ function render(){
   statsHtml+=renderWins();
   statsHtml+=renderPodiums();
   statsHtml+=renderSize13s();
+  statsHtml+=renderPopularPicks();
   document.getElementById('sec-stats').innerHTML=statsHtml;
 }
 
