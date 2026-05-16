@@ -1219,18 +1219,18 @@ function renderESPN(pl){
     return;
   }
 
-  // Calculate positions with tie handling across all active players
-  function calcPositions(players){
+  // Calculate positions with tie handling, with optional offset for cut players
+  function calcPositions(players, offset=0){
     const pos=[];
     players.forEach((p,i)=>{
-      if(i===0) pos.push(1);
-      else pos.push(players[i-1].score===p.score ? pos[i-1] : i+1);
+      if(i===0) pos.push(1+offset);
+      else pos.push(players[i-1].score===p.score ? pos[i-1] : i+1+offset);
     });
     return pos;
   }
   const activePos=calcPositions(active);
-  // Cut players get their own position numbering after the cut line
-  const cutPos=calcPositions(cutPlayers);
+  // Cut players continue numbering after all active players
+  const cutPos=calcPositions(cutPlayers, active.length);
 
   function fmtPos(players, pos, i){
     const p=players[i];
