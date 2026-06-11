@@ -377,10 +377,9 @@ async function loadConfigAndOdds(){
   // Teams
   TEAMS.length = 0;
   (cfg.teams||[]).forEach(t=>TEAMS.push(t));
-  console.log(`Config loaded: ${TEAMS.length} teams, ESPN=${ev.espnEventId}, status=${ev.status}`);
-
   // Patch UI strings
   const ev = cfg.event||{};
+  console.log(`Config loaded: ${TEAMS.length} teams, ESPN=${ev.espnEventId}, status=${ev.status}`);
   window._ESPN_API = ev.espnEventId
     ? `https://site.api.espn.com/apis/site/v2/sports/golf/pga/scoreboard?event=${ev.espnEventId}`
     : null;
