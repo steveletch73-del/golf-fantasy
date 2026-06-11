@@ -32,5 +32,17 @@
       4
     ]
   },
-  "teams": []
+  "teams": [
+    {
+      "name": "Test",
+      "stars": 0,
+      "picks": [
+        "Scottie Scheffler",
+        "T1",
+        "T2",
+        "T3",
+        "Ryo Hisatsune"
+      ]
+    }
+  ]
 }
