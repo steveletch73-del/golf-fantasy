@@ -1,16 +1,16 @@
 {
   "event": {
-    "name": "PGA Championship",
+    "name": "U.S. Open",
     "year": 2026,
-    "subtitle": "Aronimink GC · May 14–17, 2026",
-    "espnEventId": "401811947",
-    "startDate": "2026-05-14",
+    "subtitle": "Shinnecock Hills GC · June 18–21, 2026",
+    "espnEventId": "401811952",
+    "startDate": "2026-06-18",
     "status": "live"
   },
   "rules": {
     "budget": 40,
     "picksPerTeam": 5,
-    "cutRule": 70,
+    "cutRule": 60,
     "holePars": [
       4,
       4,
