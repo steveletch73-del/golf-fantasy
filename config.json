@@ -1,6 +1,6 @@
 {
   "event": {
-    "name": "U.S. Open",
+    "name": "U.S. Open TEST",
     "year": 2026,
     "subtitle": "Shinnecock Hills GC · June 18–21, 2026",
     "espnEventId": "401811952",
@@ -35,6 +35,6 @@
   "teams": [],
   "github": {
     "repo": "steveletch73-del/golf-fantasy",
-    "submissionsToken": "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"
+    "submissionsToken": ""
   }
 }
