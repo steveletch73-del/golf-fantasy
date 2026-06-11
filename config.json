@@ -11,11 +11,30 @@
     "budget": 40,
     "picksPerTeam": 5,
     "cutRule": 70,
-    "holePars": [4,4,4,4,3,4,4,3,5,4,4,4,4,3,4,5,3,4]
+    "holePars": [
+      4,
+      4,
+      4,
+      4,
+      3,
+      4,
+      4,
+      3,
+      5,
+      4,
+      4,
+      4,
+      4,
+      3,
+      4,
+      5,
+      3,
+      4
+    ]
   },
+  "teams": [],
   "github": {
-    "repo": "your-username/your-repo",
-    "submissionsToken": ""
-  },
-  "teams": []
+    "repo": "steveletch73-del/golf-fantasy",
+    "submissionsToken": "steveletch73-del/golf-fantasy"
+  }
 }
