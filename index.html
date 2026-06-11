@@ -339,8 +339,7 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(-
   <div class="foot" id="foot">Scores sourced live from ESPN · Refresh for latest<br><a href="champions.html" style="color:var(--gold);text-decoration:none;font-weight:500">🏆 Past Champions</a></div>
 </main></div>
 <script>
-const ROUTER_BIN='69de381d36566621a8b0f1ca';
-const ROUTER_KEY='$2a$10$ZZYpFYGdNHFN29hcbu/zfO45tnNgkJaNRV8.qwVGvqFE8DRdFIBhy';
+// GitHub repo for submissions — set by config.json (reuses window._CONFIG)
 
 // ── CONFIG — loaded from config.json + odds.json at startup ──────────────────
 let BUDGET    = 40;
@@ -569,30 +568,44 @@ async function submitTeam() {
   btn.disabled = true;
   btn.textContent = 'Submitting…';
   try {
-    // Read current data
-    const getRes = await fetch(`https://api.jsonbin.io/v3/b/${ROUTER_BIN}`, {
-      headers: {'X-Master-Key': ROUTER_KEY}
+    const cfg = window._CONFIG||{};
+    const ghRepo = cfg.github?.repo||'';
+    const ghToken = cfg.github?.submissionsToken||'';
+    if(!ghRepo) throw new Error('No GitHub repo configured');
+
+    // Read current submissions.json
+    let current = {teams:{}};
+    let sha;
+    try{
+      const r=await fetch(`https://api.github.com/repos/${ghRepo}/contents/submissions.json`,{
+        headers:{Authorization:`Bearer ${ghToken}`,Accept:'application/vnd.github.v3+json'}
+      });
+      if(r.ok){
+        const file=await r.json();
+        sha=file.sha;
+        current=JSON.parse(decodeURIComponent(escape(atob(file.content.replace(/\n/g,'')))));
+      }
+    }catch(e){}
+
+    // Add/overwrite this team
+    current.teams[name]={picks,submitted:new Date().toISOString(),spent:spent()};
+
+    // Write back
+    const body={message:`Submit team: ${name}`,content:btoa(unescape(encodeURIComponent(JSON.stringify(current,null,2))))};
+    if(sha) body.sha=sha;
+    const put=await fetch(`https://api.github.com/repos/${ghRepo}/contents/submissions.json`,{
+      method:'PUT',
+      headers:{Authorization:`Bearer ${ghToken}`,Accept:'application/vnd.github.v3+json','Content-Type':'application/json'},
+      body:JSON.stringify(body)
     });
-    const current = await getRes.json();
-    const data = current.record || {teams:{}, eventStarted:false};
-    // Write/overwrite this team
-    data.teams[name] = {
-      picks: picks,
-      submitted: new Date().toISOString(),
-      spent: spent()
-    };
-    // Save back
-    await fetch(`https://api.jsonbin.io/v3/b/${ROUTER_BIN}`, {
-      method: 'PUT',
-      headers: {'X-Master-Key': ROUTER_KEY, 'Content-Type': 'application/json', 'X-Bin-Versioning': 'false'},
-      body: JSON.stringify(data)
-    });
-    // Show success screen
+    if(!put.ok){ const e=await put.json().catch(()=>({})); throw new Error(e.message||'GitHub write failed'); }
+
     showSuccess(name);
   } catch(e) {
     btn.disabled = false;
     updateSubmit();
     showToast('Submission failed — check connection and try again');
+    console.error(e);
   }
 }
 
@@ -1144,7 +1157,6 @@ function renderESPN(pl){
       cutPlayers.forEach((p,i)=>{ rows+=playerRow(p,true,fmtPos(cutPlayers,cutPos,i)); });
     }
   }
-  const refreshCount=window._refreshCount||0;
   document.getElementById('espn-content').innerHTML=`
     <div class="espn-wrap">
       <table class="espn-tbl">
@@ -1158,8 +1170,7 @@ function renderESPN(pl){
         </tr></thead>
         <tbody>${rows}</tbody>
       </table>
-    </div>
-    <div id="refresh-counter" style="text-align:center;font-size:10px;color:#bbb;margin-top:8px;padding-bottom:4px">↻ refreshed ${refreshCount} ${refreshCount===1?'time':'times'} by all visitors</div>`;
+    </div>`;
 }
 
 function toggleScorecard(el){
@@ -1233,10 +1244,6 @@ function flashChanges(){
 
 }
 
-function updateRefreshCounter(n){
-  const el=document.getElementById('refresh-counter');
-  if(el) el.textContent=`↻ refreshed ${n} ${n===1?'time':'times'} by all visitors`;
-}
 
 // ESPN_API built dynamically from config.json espnEventId
 function getESPN_API(){
@@ -1268,23 +1275,6 @@ async function fetchAndRender(){
     stat.innerHTML=`<b>Live</b> · ${players.length} players · Updated ${now}`;
     document.getElementById('foot').innerHTML=`Live scores from ESPN API · Updated ${now} · Refresh for latest<br><a href="champions.html" style="color:var(--gold);text-decoration:none;font-weight:500">🏆 Past Champions</a>`;
     window._lastPlayers=players;
-    // Increment shared counter on jsonbin.io
-    (async()=>{
-      try{
-        const headers={'X-Master-Key':'$2a$10$ZZYpFYGdNHFN29hcbu/zfO45tnNgkJaNRV8.qwVGvqFE8DRdFIBhy','Content-Type':'application/json','X-Bin-Versioning':'false'};
-        const get=await fetch('https://api.jsonbin.io/v3/b/69dba824aaba882197eeee8c',{headers});
-        const json=await get.json();
-        const newCount=(json.record?.count||0)+1;
-        await fetch('https://api.jsonbin.io/v3/b/69dba824aaba882197eeee8c',{method:'PUT',headers,body:JSON.stringify({count:newCount})});
-        window._refreshCount=newCount;
-        updateRefreshCounter(newCount);
-      }catch(e){
-        const fb=(parseInt(localStorage.getItem('pgaRefreshCount')||'0'))+1;
-        localStorage.setItem('pgaRefreshCount',fb);
-        window._refreshCount=fb;
-        updateRefreshCounter(fb);
-      }
-    })();
     // Snapshot old scores from DOM before re-render
     const oldScores={};
     document.querySelectorAll('[data-score-name]').forEach(el=>{ oldScores[el.dataset.scoreName]=parseInt(el.dataset.scoreVal); });

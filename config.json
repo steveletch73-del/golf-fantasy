@@ -1,158 +1,21 @@
 {
   "event": {
-    "name": "U.S. Open",
+    "name": "PGA Championship",
     "year": 2026,
-    "subtitle": "Shinnecock Hills GC · June 18–21, 2026",
-    "espnEventId": "401811952",
-    "startDate": "2026-06-18",
-    "status": "pre"
+    "subtitle": "Aronimink GC · May 14–17, 2026",
+    "espnEventId": "401811947",
+    "startDate": "2026-05-14",
+    "status": "live"
   },
   "rules": {
     "budget": 40,
     "picksPerTeam": 5,
-    "cutRule": 60,
-    "holePars": [
-      4,
-      4,
-      4,
-      4,
-      3,
-      4,
-      4,
-      3,
-      5,
-      4,
-      4,
-      4,
-      4,
-      3,
-      4,
-      5,
-      3,
-      4
-    ]
+    "cutRule": 70,
+    "holePars": [4,4,4,4,3,4,4,3,5,4,4,4,4,3,4,5,3,4]
   },
-  "teams": [
-    {
-      "name": "Saunders",
-      "stars": 0,
-      "picks": [
-        "Matt Fitzpatrick",
-        "Sam Burns",
-        "Patrick Reed",
-        "Corey Conners",
-        "Tyrrell Hatton"
-      ]
-    },
-    {
-      "name": "Frazer",
-      "stars": 0,
-      "picks": [
-        "Cameron Young",
-        "Nicolai Hojgaard",
-        "Alex Fitzpatrick",
-        "Justin Thomas",
-        "Chris Gotterup"
-      ]
-    },
-    {
-      "name": "Keith",
-      "stars": 0,
-      "picks": [
-        "Brooks Koepka",
-        "Hideki Matsuyama",
-        "Gary Woodland",
-        "Collin Morikawa",
-        "Patrick Reed"
-      ]
-    },
-    {
-      "name": "Steve",
-      "stars": 0,
-      "picks": [
-        "Ludvig Aberg",
-        "Tyrrell Hatton",
-        "Viktor Hovland",
-        "Jason Day",
-        "Aaron Rai"
-      ]
-    },
-    {
-      "name": "Fletcher",
-      "stars": 0,
-      "picks": [
-        "Tommy Fleetwood",
-        "Collin Morikawa",
-        "Viktor Hovland",
-        "Matt McCarty",
-        "Rickie Fowler"
-      ]
-    },
-    {
-      "name": "Lecky",
-      "stars": 0,
-      "picks": [
-        "Tommy Fleetwood",
-        "J.J. Spaun",
-        "Si Woo Kim",
-        "Nicolai Hojgaard",
-        "Tyrrell Hatton"
-      ]
-    },
-    {
-      "name": "Lions",
-      "stars": 0,
-      "picks": [
-        "Rory McIlroy",
-        "Tommy Fleetwood",
-        "Brian Harman",
-        "Alex Fitzpatrick",
-        "Cameron Smith"
-      ]
-    },
-    {
-      "name": "Jack",
-      "stars": 0,
-      "picks": [
-        "Cameron Smith",
-        "Ryo Hisatsune",
-        "Cameron Young",
-        "Ludvig Aberg",
-        "Viktor Hovland"
-      ]
-    },
-    {
-      "name": "Perry",
-      "stars": 0,
-      "picks": [
-        "Cameron Young",
-        "Xander Schauffele",
-        "Sahith Theegala",
-        "Marco Penge",
-        "Matt McCarty"
-      ]
-    },
-    {
-      "name": "Purkis",
-      "stars": 0,
-      "picks": [
-        "Cameron Young",
-        "Tommy Fleetwood",
-        "Sungjae Im",
-        "Alex Smalley",
-        "Keegan Bradley"
-      ]
-    },
-    {
-      "name": "Josh Moran",
-      "stars": 0,
-      "picks": [
-        "Jon Rahm",
-        "Cameron Smith",
-        "Dustin Johnson",
-        "Collin Morikawa",
-        "Viktor Hovland"
-      ]
-    }
-  ]
+  "github": {
+    "repo": "your-username/your-repo",
+    "submissionsToken": ""
+  },
+  "teams": []
 }
