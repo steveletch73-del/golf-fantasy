@@ -377,6 +377,7 @@ async function loadConfigAndOdds(){
   // Teams
   TEAMS.length = 0;
   (cfg.teams||[]).forEach(t=>TEAMS.push(t));
+  console.log(`Config loaded: ${TEAMS.length} teams, ESPN=${ev.espnEventId}, status=${ev.status}`);
 
   // Patch UI strings
   const ev = cfg.event||{};
@@ -918,6 +919,10 @@ function parseESPNJson(data){
 function renderLB(pl){
   const list=ranked(pl);
   const n=list.length;
+  if(!n){
+    document.getElementById('lb-content').innerHTML='<div style="padding:32px;text-align:center;color:#999;font-size:14px">No teams submitted yet</div>';
+    return;
+  }
   const lastScore=list[n-1].total;
 
   // Assign positions accounting for ties
