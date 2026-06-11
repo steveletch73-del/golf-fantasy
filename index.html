@@ -339,7 +339,8 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(-
   <div class="foot" id="foot">Scores sourced live from ESPN · Refresh for latest<br><a href="champions.html" style="color:var(--gold);text-decoration:none;font-weight:500">🏆 Past Champions</a></div>
 </main></div>
 <script>
-// GitHub repo for submissions — set by config.json (reuses window._CONFIG)
+const ROUTER_BIN='6a2abf63da38895dfeadd290';
+const ROUTER_KEY='$2a$10$Dju4WR1CVoVvR/dug26b5.qIrG7CEliFkbBUFthcgZK.RE4ledawK';
 
 // ── CONFIG — loaded from config.json + odds.json at startup ──────────────────
 let BUDGET    = 40;
@@ -377,9 +378,9 @@ async function loadConfigAndOdds(){
   // Teams
   TEAMS.length = 0;
   (cfg.teams||[]).forEach(t=>TEAMS.push(t));
+
   // Patch UI strings
   const ev = cfg.event||{};
-  console.log(`Config loaded: ${TEAMS.length} teams, ESPN=${ev.espnEventId}, status=${ev.status}`);
   window._ESPN_API = ev.espnEventId
     ? `https://site.api.espn.com/apis/site/v2/sports/golf/pga/scoreboard?event=${ev.espnEventId}`
     : null;
@@ -568,44 +569,30 @@ async function submitTeam() {
   btn.disabled = true;
   btn.textContent = 'Submitting…';
   try {
-    const cfg = window._CONFIG||{};
-    const ghRepo = cfg.github?.repo||'';
-    const ghToken = cfg.github?.submissionsToken||'';
-    if(!ghRepo) throw new Error('No GitHub repo configured');
-
-    // Read current submissions.json
-    let current = {teams:{}};
-    let sha;
-    try{
-      const r=await fetch(`https://api.github.com/repos/${ghRepo}/contents/submissions.json`,{
-        headers:{Authorization:`Bearer ${ghToken}`,Accept:'application/vnd.github.v3+json'}
-      });
-      if(r.ok){
-        const file=await r.json();
-        sha=file.sha;
-        current=JSON.parse(decodeURIComponent(escape(atob(file.content.replace(/\n/g,'')))));
-      }
-    }catch(e){}
-
-    // Add/overwrite this team
-    current.teams[name]={picks,submitted:new Date().toISOString(),spent:spent()};
-
-    // Write back
-    const body={message:`Submit team: ${name}`,content:btoa(unescape(encodeURIComponent(JSON.stringify(current,null,2))))};
-    if(sha) body.sha=sha;
-    const put=await fetch(`https://api.github.com/repos/${ghRepo}/contents/submissions.json`,{
-      method:'PUT',
-      headers:{Authorization:`Bearer ${ghToken}`,Accept:'application/vnd.github.v3+json','Content-Type':'application/json'},
-      body:JSON.stringify(body)
+    // Read current data
+    const getRes = await fetch(`https://api.jsonbin.io/v3/b/${ROUTER_BIN}`, {
+      headers: {'X-Master-Key': ROUTER_KEY}
     });
-    if(!put.ok){ const e=await put.json().catch(()=>({})); throw new Error(e.message||'GitHub write failed'); }
-
+    const current = await getRes.json();
+    const data = current.record || {teams:{}, eventStarted:false};
+    // Write/overwrite this team
+    data.teams[name] = {
+      picks: picks,
+      submitted: new Date().toISOString(),
+      spent: spent()
+    };
+    // Save back
+    await fetch(`https://api.jsonbin.io/v3/b/${ROUTER_BIN}`, {
+      method: 'PUT',
+      headers: {'X-Master-Key': ROUTER_KEY, 'Content-Type': 'application/json', 'X-Bin-Versioning': 'false'},
+      body: JSON.stringify(data)
+    });
+    // Show success screen
     showSuccess(name);
   } catch(e) {
     btn.disabled = false;
     updateSubmit();
     showToast('Submission failed — check connection and try again');
-    console.error(e);
   }
 }
 
@@ -918,10 +905,6 @@ function parseESPNJson(data){
 function renderLB(pl){
   const list=ranked(pl);
   const n=list.length;
-  if(!n){
-    document.getElementById('lb-content').innerHTML='<div style="padding:32px;text-align:center;color:#999;font-size:14px">No teams submitted yet</div>';
-    return;
-  }
   const lastScore=list[n-1].total;
 
   // Assign positions accounting for ties
@@ -978,10 +961,6 @@ function renderLB(pl){
 function renderTeams(pl){
   const list=ranked(pl);
   const n=list.length;
-  if(!n){
-    document.getElementById('teams-content').innerHTML='<div style="padding:32px;text-align:center;color:#999;font-size:14px">No teams submitted yet</div>';
-    return;
-  }
   const lastScore=list[n-1].total;
 
   // Assign positions accounting for ties (same logic as renderLB)
@@ -1251,7 +1230,6 @@ function flashChanges(){
   });
 
 }
-
 
 // ESPN_API built dynamically from config.json espnEventId
 function getESPN_API(){
