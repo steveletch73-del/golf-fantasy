@@ -1,26 +1,302 @@
 [
   {
     "name": "Scottie Scheffler",
-    "odds": 345
+    "odds": 460
   },
   {
-    "name": "T1",
-    "odds": 29000
+    "name": "Rory McIlroy",
+    "odds": 950
   },
   {
-    "name": "T2",
-    "odds": 29000
+    "name": "Jon Rahm",
+    "odds": 1025
   },
   {
-    "name": "T3",
-    "odds": 29000
+    "name": "Xander Schauffele",
+    "odds": 1850
   },
   {
-    "name": "T4",
-    "odds": 29000
+    "name": "Cameron Young",
+    "odds": 2000
+  },
+  {
+    "name": "Matt Fitzpatrick",
+    "odds": 2150
+  },
+  {
+    "name": "Tommy Fleetwood",
+    "odds": 2500
+  },
+  {
+    "name": "Ludvig Aberg",
+    "odds": 2600
+  },
+  {
+    "name": "Bryson DeChambeau",
+    "odds": 2700
+  },
+  {
+    "name": "Brooks Koepka",
+    "odds": 3300
+  },
+  {
+    "name": "Collin Morikawa",
+    "odds": 3500
+  },
+  {
+    "name": "Wyndham Clark",
+    "odds": 3700
+  },
+  {
+    "name": "Russell Henley",
+    "odds": 3700
+  },
+  {
+    "name": "Sam Burns",
+    "odds": 3800
+  },
+  {
+    "name": "Si Woo Kim",
+    "odds": 3900
+  },
+  {
+    "name": "Chris Gotterup",
+    "odds": 4400
+  },
+  {
+    "name": "Justin Thomas",
+    "odds": 4400
+  },
+  {
+    "name": "Tyrrell Hatton",
+    "odds": 4600
+  },
+  {
+    "name": "Patrick Cantlay",
+    "odds": 4600
+  },
+  {
+    "name": "Patrick Reed",
+    "odds": 4900
+  },
+  {
+    "name": "Justin Rose",
+    "odds": 5200
+  },
+  {
+    "name": "Viktor Hovland",
+    "odds": 5400
+  },
+  {
+    "name": "J.J. Spaun",
+    "odds": 6100
+  },
+  {
+    "name": "Hideki Matsuyama",
+    "odds": 6500
+  },
+  {
+    "name": "Robert MacIntyre",
+    "odds": 6600
+  },
+  {
+    "name": "Jordan Spieth",
+    "odds": 6900
+  },
+  {
+    "name": "Joaquin Niemann",
+    "odds": 6900
+  },
+  {
+    "name": "Min Woo Lee",
+    "odds": 7200
+  },
+  {
+    "name": "Ben Griffin",
+    "odds": 7400
+  },
+  {
+    "name": "Maverick McNealy",
+    "odds": 7600
+  },
+  {
+    "name": "Adam Scott",
+    "odds": 7600
+  },
+  {
+    "name": "Kurt Kitayama",
+    "odds": 7800
+  },
+  {
+    "name": "Shane Lowry",
+    "odds": 8200
+  },
+  {
+    "name": "Harris English",
+    "odds": 8800
+  },
+  {
+    "name": "Jake Knapp",
+    "odds": 9400
+  },
+  {
+    "name": "David Puig",
+    "odds": 9600
+  },
+  {
+    "name": "Bud Cauley",
+    "odds": 9600
+  },
+  {
+    "name": "Alex Smalley",
+    "odds": 10500
+  },
+  {
+    "name": "Sepp Straka",
+    "odds": 10500
+  },
+  {
+    "name": "Alex Fitzpatrick",
+    "odds": 11000
+  },
+  {
+    "name": "Aaron Rai",
+    "odds": 11000
+  },
+  {
+    "name": "Ryan Gerard",
+    "odds": 11000
+  },
+  {
+    "name": "Rickie Fowler",
+    "odds": 11000
+  },
+  {
+    "name": "Kristoffer Reitan",
+    "odds": 11500
+  },
+  {
+    "name": "J.T. Poston",
+    "odds": 11500
+  },
+  {
+    "name": "Gary Woodland",
+    "odds": 11500
+  },
+  {
+    "name": "Jason Day",
+    "odds": 13000
+  },
+  {
+    "name": "Jacob Bridgeman",
+    "odds": 13000
+  },
+  {
+    "name": "Nicolai Hojgaard",
+    "odds": 13000
+  },
+  {
+    "name": "Sudarshan Yellamaraju",
+    "odds": 13500
+  },
+  {
+    "name": "Keith Mitchell",
+    "odds": 14000
+  },
+  {
+    "name": "Akshay Bhatia",
+    "odds": 14000
+  },
+  {
+    "name": "Keegan Bradley",
+    "odds": 14500
+  },
+  {
+    "name": "Jackson Koivun",
+    "odds": 15500
+  },
+  {
+    "name": "Alex Noren",
+    "odds": 15500
+  },
+  {
+    "name": "Cameron Smith",
+    "odds": 16000
+  },
+  {
+    "name": "Dustin Johnson",
+    "odds": 16500
+  },
+  {
+    "name": "Sahith Theegala",
+    "odds": 17000
+  },
+  {
+    "name": "Harry Hall",
+    "odds": 17500
+  },
+  {
+    "name": "Ryan Fox",
+    "odds": 18500
+  },
+  {
+    "name": "Tom Kim",
+    "odds": 19000
+  },
+  {
+    "name": "Pierceson Coody",
+    "odds": 19000
+  },
+  {
+    "name": "Daniel Berger",
+    "odds": 21000
+  },
+  {
+    "name": "Corey Conners",
+    "odds": 21000
+  },
+  {
+    "name": "Sungjae Im",
+    "odds": 21000
+  },
+  {
+    "name": "Jackson Suber",
+    "odds": 22500
+  },
+  {
+    "name": "Davis Thompson",
+    "odds": 24000
+  },
+  {
+    "name": "Brian Harman",
+    "odds": 24000
   },
   {
     "name": "Ryo Hisatsune",
+    "odds": 24000
+  },
+  {
+    "name": "Nick Taylor",
+    "odds": 24000
+  },
+  {
+    "name": "Lucas Herbert",
+    "odds": 25000
+  },
+  {
+    "name": "Jayden Schaper",
+    "odds": 26000
+  },
+  {
+    "name": "Sam Stevens",
+    "odds": 27500
+  },
+  {
+    "name": "Carlos Ortiz",
+    "odds": 28000
+  },
+  {
+    "name": "Max Greyserman",
     "odds": 29000
   }
 ]
