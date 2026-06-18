@@ -35,7 +35,7 @@
   "teams": [
     {
       "name": "Saunders",
-      "stars": 0,
+      "stars": 3,
       "picks": [
         "Xander Schauffele",
         "Justin Rose",
@@ -46,7 +46,7 @@
     },
     {
       "name": "Lions",
-      "stars": 0,
+      "stars": 4,
       "picks": [
         "Rory McIlroy",
         "Shane Lowry",
@@ -57,7 +57,7 @@
     },
     {
       "name": "Lecky",
-      "stars": 0,
+      "stars": 4,
       "picks": [
         "Matt Fitzpatrick",
         "Brooks Koepka",
@@ -68,7 +68,7 @@
     },
     {
       "name": "Purkis",
-      "stars": 0,
+      "stars": 4,
       "picks": [
         "Kristoffer Reitan",
         "Nick Taylor",
@@ -79,7 +79,7 @@
     },
     {
       "name": "Fletcher",
-      "stars": 0,
+      "stars": 4,
       "picks": [
         "J.J. Spaun",
         "Patrick Reed",
@@ -90,7 +90,7 @@
     },
     {
       "name": "Jack",
-      "stars": 0,
+      "stars": 4,
       "picks": [
         "Wyndham Clark",
         "Justin Rose",
@@ -101,7 +101,7 @@
     },
     {
       "name": "Frazer",
-      "stars": 0,
+      "stars": 5,
       "picks": [
         "Matt Fitzpatrick",
         "Russell Henley",
@@ -112,7 +112,7 @@
     },
     {
       "name": "Steve",
-      "stars": 0,
+      "stars": 3,
       "picks": [
         "Matt Fitzpatrick",
         "Collin Morikawa",
@@ -123,7 +123,7 @@
     },
     {
       "name": "Perry",
-      "stars": 0,
+      "stars": 3,
       "picks": [
         "Xander Schauffele",
         "J.J. Spaun",
@@ -134,7 +134,7 @@
     },
     {
       "name": "Keith",
-      "stars": 0,
+      "stars": 3,
       "picks": [
         "Daniel Berger",
         "Brian Harman",
