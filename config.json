@@ -34,14 +34,113 @@
   },
   "teams": [
     {
-      "name": "Test",
+      "name": "Saunders",
       "stars": 0,
       "picks": [
-        "Scottie Scheffler",
-        "T1",
-        "T2",
-        "T3",
-        "Ryo Hisatsune"
+        "Xander Schauffele",
+        "Justin Rose",
+        "Aaron Rai",
+        "Patrick Cantlay",
+        "Akshay Bhatia"
+      ]
+    },
+    {
+      "name": "Lions",
+      "stars": 0,
+      "picks": [
+        "Rory McIlroy",
+        "Shane Lowry",
+        "Alex Fitzpatrick",
+        "Ryan Gerard",
+        "Keegan Bradley"
+      ]
+    },
+    {
+      "name": "Lecky",
+      "stars": 0,
+      "picks": [
+        "Matt Fitzpatrick",
+        "Brooks Koepka",
+        "Chris Gotterup",
+        "Kristoffer Reitan",
+        "Corey Conners"
+      ]
+    },
+    {
+      "name": "Purkis",
+      "stars": 0,
+      "picks": [
+        "Kristoffer Reitan",
+        "Nick Taylor",
+        "Rory McIlroy",
+        "Russell Henley",
+        "Nicolai Hojgaard"
+      ]
+    },
+    {
+      "name": "Fletcher",
+      "stars": 0,
+      "picks": [
+        "J.J. Spaun",
+        "Patrick Reed",
+        "Max Greyserman",
+        "Xander Schauffele",
+        "Tyrrell Hatton"
+      ]
+    },
+    {
+      "name": "Jack",
+      "stars": 0,
+      "picks": [
+        "Wyndham Clark",
+        "Justin Rose",
+        "Max Greyserman",
+        "Tommy Fleetwood",
+        "Patrick Reed"
+      ]
+    },
+    {
+      "name": "Frazer",
+      "stars": 0,
+      "picks": [
+        "Matt Fitzpatrick",
+        "Russell Henley",
+        "Aaron Rai",
+        "Ryo Hisatsune",
+        "Chris Gotterup"
+      ]
+    },
+    {
+      "name": "Steve",
+      "stars": 0,
+      "picks": [
+        "Matt Fitzpatrick",
+        "Collin Morikawa",
+        "Viktor Hovland",
+        "Aaron Rai",
+        "Brian Harman"
+      ]
+    },
+    {
+      "name": "Perry",
+      "stars": 0,
+      "picks": [
+        "Xander Schauffele",
+        "J.J. Spaun",
+        "Keegan Bradley",
+        "Tommy Fleetwood",
+        "Ryan Fox"
+      ]
+    },
+    {
+      "name": "Keith",
+      "stars": 0,
+      "picks": [
+        "Daniel Berger",
+        "Brian Harman",
+        "Cameron Young",
+        "Collin Morikawa",
+        "Russell Henley"
       ]
     }
   ]
