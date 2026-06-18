@@ -339,8 +339,8 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(-
   <div class="foot" id="foot">Scores sourced live from ESPN · Refresh for latest<br><a href="champions.html" style="color:var(--gold);text-decoration:none;font-weight:500">🏆 Past Champions</a></div>
 </main></div>
 <script>
-const ROUTER_BIN='69de381d36566621a8b0f1ca';
-const ROUTER_KEY='$2a$10$ZZYpFYGdNHFN29hcbu/zfO45tnNgkJaNRV8.qwVGvqFE8DRdFIBhy';
+const ROUTER_BIN='6a2abf63da38895dfeadd290';
+const ROUTER_KEY='$2a$10$Dju4WR1CVoVvR/dug26b5.qIrG7CEliFkbBUFthcgZK.RE4ledawK';
 
 // ── CONFIG — loaded from config.json + odds.json at startup ──────────────────
 let BUDGET    = 40;
@@ -905,6 +905,7 @@ function parseESPNJson(data){
 function renderLB(pl){
   const list=ranked(pl);
   const n=list.length;
+  if(!n){ document.getElementById('lb-content').innerHTML='<div style="padding:32px;text-align:center;color:#999;font-size:14px">No teams submitted yet</div>'; return; }
   const lastScore=list[n-1].total;
 
   // Assign positions accounting for ties
@@ -961,6 +962,7 @@ function renderLB(pl){
 function renderTeams(pl){
   const list=ranked(pl);
   const n=list.length;
+  if(!n){ document.getElementById('teams-content').innerHTML='<div style="padding:32px;text-align:center;color:#999;font-size:14px">No teams submitted yet</div>'; return; }
   const lastScore=list[n-1].total;
 
   // Assign positions accounting for ties (same logic as renderLB)
@@ -1062,14 +1064,14 @@ function renderESPN(pl){
   const PROJ_CUT = (typeof pl._projCut==='number') ? pl._projCut : 3;
   const r2Complete = pl._r2Complete===true;
   const CUT_RULE = pl._cutRule ?? 70;
-  // Sort: started players by score, not-yet-started players after (by tee time then name)
+  // Sort: started players by score first, not-yet-started players after
   function hasStarted(p){ return p.thru==='F' || (p.thru!=='--' && p.thru!==null && /^\d+$/.test(String(p.thru))); }
   const active=[...pl].sort((a,b)=>{
     const as=hasStarted(a), bs=hasStarted(b);
-    if(as && !bs) return -1;  // started before not-started
+    if(as && !bs) return -1;
     if(!as && bs) return 1;
-    if(!as && !bs) return 0;  // both not started — keep original order
-    return a.score-b.score;   // both started — sort by score
+    if(!as && !bs) return 0;
+    return a.score-b.score;
   });
   const cutPlayers=[...(pl._cut||[])].sort((a,b)=>a.score-b.score);
   if(!active.length&&!cutPlayers.length){
@@ -1151,7 +1153,6 @@ function renderESPN(pl){
       cutPlayers.forEach((p,i)=>{ rows+=playerRow(p,true,fmtPos(cutPlayers,cutPos,i)); });
     }
   }
-  const refreshCount=window._refreshCount||0;
   document.getElementById('espn-content').innerHTML=`
     <div class="espn-wrap">
       <table class="espn-tbl">
@@ -1165,8 +1166,7 @@ function renderESPN(pl){
         </tr></thead>
         <tbody>${rows}</tbody>
       </table>
-    </div>
-    <div id="refresh-counter" style="text-align:center;font-size:10px;color:#bbb;margin-top:8px;padding-bottom:4px">↻ refreshed ${refreshCount} ${refreshCount===1?'time':'times'} by all visitors</div>`;
+    </div>`;
 }
 
 function toggleScorecard(el){
@@ -1240,11 +1240,6 @@ function flashChanges(){
 
 }
 
-function updateRefreshCounter(n){
-  const el=document.getElementById('refresh-counter');
-  if(el) el.textContent=`↻ refreshed ${n} ${n===1?'time':'times'} by all visitors`;
-}
-
 // ESPN_API built dynamically from config.json espnEventId
 function getESPN_API(){
   return window._ESPN_API || 'https://site.api.espn.com/apis/site/v2/sports/golf/pga/scoreboard?event=401811947';
@@ -1275,23 +1270,6 @@ async function fetchAndRender(){
     stat.innerHTML=`<b>Live</b> · ${players.length} players · Updated ${now}`;
     document.getElementById('foot').innerHTML=`Live scores from ESPN API · Updated ${now} · Refresh for latest<br><a href="champions.html" style="color:var(--gold);text-decoration:none;font-weight:500">🏆 Past Champions</a>`;
     window._lastPlayers=players;
-    // Increment shared counter on jsonbin.io
-    (async()=>{
-      try{
-        const headers={'X-Master-Key':'$2a$10$ZZYpFYGdNHFN29hcbu/zfO45tnNgkJaNRV8.qwVGvqFE8DRdFIBhy','Content-Type':'application/json','X-Bin-Versioning':'false'};
-        const get=await fetch('https://api.jsonbin.io/v3/b/69dba824aaba882197eeee8c',{headers});
-        const json=await get.json();
-        const newCount=(json.record?.count||0)+1;
-        await fetch('https://api.jsonbin.io/v3/b/69dba824aaba882197eeee8c',{method:'PUT',headers,body:JSON.stringify({count:newCount})});
-        window._refreshCount=newCount;
-        updateRefreshCounter(newCount);
-      }catch(e){
-        const fb=(parseInt(localStorage.getItem('pgaRefreshCount')||'0'))+1;
-        localStorage.setItem('pgaRefreshCount',fb);
-        window._refreshCount=fb;
-        updateRefreshCounter(fb);
-      }
-    })();
     // Snapshot old scores from DOM before re-render
     const oldScores={};
     document.querySelectorAll('[data-score-name]').forEach(el=>{ oldScores[el.dataset.scoreName]=parseInt(el.dataset.scoreVal); });
