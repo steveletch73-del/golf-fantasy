@@ -1064,15 +1064,10 @@ function renderESPN(pl){
   const PROJ_CUT = (typeof pl._projCut==='number') ? pl._projCut : 3;
   const r2Complete = pl._r2Complete===true;
   const CUT_RULE = pl._cutRule ?? 70;
-  // Sort: started players by score first, not-yet-started players after
-  function hasStarted(p){ return p.thru==='F' || (p.thru!=='--' && p.thru!==null && /^\d+$/.test(String(p.thru))); }
-  const active=[...pl].sort((a,b)=>{
-    const as=hasStarted(a), bs=hasStarted(b);
-    if(as && !bs) return -1;
-    if(!as && bs) return 1;
-    if(!as && !bs) return 0;
-    return a.score-b.score;
-  });
+  // Sort by total score — correct for mid-tournament standings regardless of
+  // whether a player has started today's round (their score already reflects
+  // completed rounds, so it's directly comparable to anyone else's).
+  const active=[...pl].sort((a,b)=>a.score-b.score);
   const cutPlayers=[...(pl._cut||[])].sort((a,b)=>a.score-b.score);
   if(!active.length&&!cutPlayers.length){
     document.getElementById('espn-content').innerHTML='<div class="espn-wrap"><div class="espn-err">No data available</div></div>';
