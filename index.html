@@ -700,17 +700,56 @@ function parseESPNJson(data){
 
       // Position / cut status
       // Scoreboard endpoint has no per-player status object.
-      // Active players (made cut) have 4 linescore slots (R1, R2, R3 placeholder, R4 placeholder).
-      // Cut/WD players only have 2 (R1, R2) — no R3/R4 placeholders added.
+      // Once R3 begins, ESPN gives ALL players (cut or not) a 3rd linescore slot
+      // as a placeholder — so slot count alone no longer distinguishes them.
+      // The real signal: active players have a published R3 tee time (a date
+      // string in the last stats entry of their R3 linescore). Cut players'
+      // R3 placeholder has all-zero stats with no tee time, since they were
+      // never assigned a time.
       const posRaw=c.status?.position?.displayName||c.status?.displayValue||'';
       const statusTypeName=c.status?.type?.name||'';
       const allLS=Array.isArray(c.linescores)?c.linescores:[];
       const completedLS=allLS.filter(ls=>ls.displayValue&&ls.displayValue!=='-'&&(ls.value||0)>0);
       const totalLSSlots=allLS.length;
+
+      // Check whether a given round's linescore slot has a published tee time
+      const roundHasTeeTime=(period)=>{
+        const ls=allLS.find(l=>l.period===period);
+        if(!ls) return false;
+        const stats=ls.statistics?.categories?.[0]?.stats||[];
+        const last=stats[stats.length-1];
+        return !!(last && typeof last.displayValue==='string' && /\b(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\b/.test(last.displayValue));
+      };
+      const currentRoundNum=compStatus?.period||1;
+      // Only meaningful once we're at R3+ and a placeholder slot exists for
+      // the current round but the player hasn't started it and has no
+      // published tee time for it (cut players never get a tee time)
+      const hasCurrentRoundSlot=allLS.some(l=>l.period===currentRoundNum);
+      const startedCurrentRound=completedLS.some(l=>l.period===currentRoundNum);
+      const missingTeeTimeForCut = currentRoundNum>=3
+              && hasCurrentRoundSlot
+              && !startedCurrentRound
+              && !roundHasTeeTime(currentRoundNum);
+
+      // Mid-round withdrawal: a round's hole-by-hole array exists but has
+      // fewer than 18 holes recorded (player stopped partway through), and
+      // no holes have been completed in any later round since. A tee time
+      // existing for a later round doesn't rule this out — ESPN still
+      // publishes a scheduled tee time even after a withdrawal is logged.
+      const r1=allLS.find(l=>l.period===1);
+      const r1HolesPlayed=Array.isArray(r1?.linescores)?r1.linescores.length:0;
+      const r1Incomplete = r1 && r1HolesPlayed>0 && r1HolesPlayed<18
+              && r1.displayValue!=='-' && r1.displayValue!=null;
+      const noLaterRoundActivity = !completedLS.some(l=>l.period>1);
+      // Only flag as WD if the tournament has moved past R1 — otherwise a
+      // player simply mid-round right now would be wrongly caught.
+      const midRoundWD = r1Incomplete && noLaterRoundActivity && currentRoundNum>=2;
+
       const isCut=/^(CUT|WD|DQ|MDF|W\/D)$/i.test(posRaw)
               ||c.status?.eliminated===true
               ||/cut|wd|dq|mdf/i.test(statusTypeName)
-              ||(compStatus?.period>=3 && totalLSSlots<=2);
+              ||missingTeeTimeForCut
+              ||midRoundWD;
       // Position from ESPN order field when no posRaw available
       const pos=isCut?(posRaw||'CUT'):(posRaw||String(c.order||'--'));
 
@@ -855,7 +894,7 @@ function parseESPNJson(data){
           };
         }
       }catch(e){}
-      const entry={pos,name,score:scoreVal,thru,teeTime,today,cut:isCut,holes};
+      const entry={pos,name,score:scoreVal,thru,teeTime,today,cut:isCut,wd:midRoundWD,holes};
       if(isCut) cut.push(entry); else out.push(entry);
     });
   }catch(e){ console.error('parseESPNJson',e); }
@@ -1068,7 +1107,12 @@ function renderESPN(pl){
   // whether a player has started today's round (their score already reflects
   // completed rounds, so it's directly comparable to anyone else's).
   const active=[...pl].sort((a,b)=>a.score-b.score);
-  const cutPlayers=[...(pl._cut||[])].sort((a,b)=>a.score-b.score);
+  const cutPlayers=[...(pl._cut||[])].sort((a,b)=>{
+    if(a.wd && !b.wd) return 1;
+    if(!a.wd && b.wd) return -1;
+    if(a.wd && b.wd) return 0; // keep stable order among WDs
+    return a.score-b.score;
+  });
   if(!active.length&&!cutPlayers.length){
     document.getElementById('espn-content').innerHTML='<div class="espn-wrap"><div class="espn-err">No data available</div></div>';
     return;
@@ -1089,8 +1133,9 @@ function renderESPN(pl){
 
   function fmtPos(players, pos, i){
     const p=players[i];
+    if(p.wd) return 'WD';
     const n=pos[i];
-    const tied=players.filter(x=>x.score===p.score).length>1;
+    const tied=players.filter(x=>x.score===p.score && !x.wd).length>1;
     return tied?`T${n}`:String(n);
   }
   function fmtScore(s){ return s===0?'<span class="e">E</span>':s>0?`<span class="o">+${s}</span>`:`<span class="u">${s}</span>`; }
