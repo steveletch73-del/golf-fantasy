@@ -700,12 +700,15 @@ function parseESPNJson(data){
 
       // Position / cut status
       // Scoreboard endpoint has no per-player status object.
-      // Once R3 begins, ESPN gives ALL players (cut or not) a 3rd linescore slot
-      // as a placeholder — so slot count alone no longer distinguishes them.
-      // The real signal: active players have a published R3 tee time (a date
-      // string in the last stats entry of their R3 linescore). Cut players'
-      // R3 placeholder has all-zero stats with no tee time, since they were
-      // never assigned a time.
+      // Once R3 begins, ESPN gives ALL players (cut or not) a placeholder
+      // linescore slot for the round they're about to play — so slot count
+      // alone doesn't distinguish cut from active. And once a LATER round
+      // starts, cut players' stale R3 placeholder just sits there unchanged
+      // with no new slot added — so checking "the tournament's current
+      // round" breaks too. The reliable signal: look at the player's OWN
+      // most recent linescore slot. If it has zero holes played, shows "-",
+      // and has no published tee time, they were never assigned to play
+      // that round — i.e. cut.
       const posRaw=c.status?.position?.displayName||c.status?.displayValue||'';
       const statusTypeName=c.status?.type?.name||'';
       const allLS=Array.isArray(c.linescores)?c.linescores:[];
@@ -713,23 +716,26 @@ function parseESPNJson(data){
       const totalLSSlots=allLS.length;
 
       // Check whether a given round's linescore slot has a published tee time
-      const roundHasTeeTime=(period)=>{
-        const ls=allLS.find(l=>l.period===period);
+      const roundHasTeeTime=(ls)=>{
         if(!ls) return false;
         const stats=ls.statistics?.categories?.[0]?.stats||[];
         const last=stats[stats.length-1];
         return !!(last && typeof last.displayValue==='string' && /\b(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\b/.test(last.displayValue));
       };
       const currentRoundNum=compStatus?.period||1;
-      // Only meaningful once we're at R3+ and a placeholder slot exists for
-      // the current round but the player hasn't started it and has no
-      // published tee time for it (cut players never get a tee time)
-      const hasCurrentRoundSlot=allLS.some(l=>l.period===currentRoundNum);
-      const startedCurrentRound=completedLS.some(l=>l.period===currentRoundNum);
+
+      // Cut detection: look at the player's OWN latest linescore slot
+      // (not the tournament's current round — once R4 starts, cut players
+      // still only have a stale, empty R3 slot with no tee time; they never
+      // get an R4 slot at all). A player is cut if their last slot has zero
+      // holes played and no published tee time, once the tournament is R3+.
+      const lastLS = allLS.length ? allLS[allLS.length-1] : null;
+      const lastLSHolesPlayed = Array.isArray(lastLS?.linescores) ? lastLS.linescores.length : 0;
       const missingTeeTimeForCut = currentRoundNum>=3
-              && hasCurrentRoundSlot
-              && !startedCurrentRound
-              && !roundHasTeeTime(currentRoundNum);
+              && lastLS
+              && lastLSHolesPlayed===0
+              && (lastLS.displayValue==='-' || lastLS.displayValue==null)
+              && !roundHasTeeTime(lastLS);
 
       // Mid-round withdrawal: a round's hole-by-hole array exists but has
       // fewer than 18 holes recorded (player stopped partway through), and
