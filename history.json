@@ -1,5 +1,271 @@
 [
   {
+    "event": "U.S. Open",
+    "year": 2026,
+    "results": [
+      {
+        "name": "Jack",
+        "score": 13,
+        "picks": [
+          {
+            "golfer": "Wyndham Clark",
+            "score": -4
+          },
+          {
+            "golfer": "Justin Rose",
+            "score": 2
+          },
+          {
+            "golfer": "Max Greyserman",
+            "score": 8
+          },
+          {
+            "golfer": "Tommy Fleetwood",
+            "score": 2
+          },
+          {
+            "golfer": "Patrick Reed",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "name": "Saunders",
+        "score": 15,
+        "picks": [
+          {
+            "golfer": "Xander Schauffele",
+            "score": 2
+          },
+          {
+            "golfer": "Justin Rose",
+            "score": 2
+          },
+          {
+            "golfer": "Aaron Rai",
+            "score": 2
+          },
+          {
+            "golfer": "Patrick Cantlay",
+            "score": 6
+          },
+          {
+            "golfer": "Akshay Bhatia",
+            "score": 3
+          }
+        ]
+      },
+      {
+        "name": "Steve",
+        "score": 20,
+        "picks": [
+          {
+            "golfer": "Matt Fitzpatrick",
+            "score": 4
+          },
+          {
+            "golfer": "Collin Morikawa",
+            "score": 3
+          },
+          {
+            "golfer": "Viktor Hovland",
+            "score": 5
+          },
+          {
+            "golfer": "Aaron Rai",
+            "score": 2
+          },
+          {
+            "golfer": "Brian Harman",
+            "score": 6
+          }
+        ]
+      },
+      {
+        "name": "Perry",
+        "score": 23,
+        "picks": [
+          {
+            "golfer": "Xander Schauffele",
+            "score": 2
+          },
+          {
+            "golfer": "J.J. Spaun",
+            "score": 8
+          },
+          {
+            "golfer": "Keegan Bradley",
+            "score": 6
+          },
+          {
+            "golfer": "Tommy Fleetwood",
+            "score": 2
+          },
+          {
+            "golfer": "Ryan Fox",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "name": "Fletcher",
+        "score": 24,
+        "picks": [
+          {
+            "golfer": "J.J. Spaun",
+            "score": 8
+          },
+          {
+            "golfer": "Patrick Reed",
+            "score": 5
+          },
+          {
+            "golfer": "Max Greyserman",
+            "score": 8
+          },
+          {
+            "golfer": "Xander Schauffele",
+            "score": 2
+          },
+          {
+            "golfer": "Tyrrell Hatton",
+            "score": 1
+          }
+        ]
+      },
+      {
+        "name": "Lions",
+        "score": 28,
+        "picks": [
+          {
+            "golfer": "Rory McIlroy",
+            "score": 6
+          },
+          {
+            "golfer": "Shane Lowry",
+            "score": 6
+          },
+          {
+            "golfer": "Alex Fitzpatrick",
+            "score": 5
+          },
+          {
+            "golfer": "Ryan Gerard",
+            "score": 5
+          },
+          {
+            "golfer": "Keegan Bradley",
+            "score": 6
+          }
+        ]
+      },
+      {
+        "name": "Lecky",
+        "score": 33,
+        "picks": [
+          {
+            "golfer": "Matt Fitzpatrick",
+            "score": 4
+          },
+          {
+            "golfer": "Brooks Koepka",
+            "score": 10
+          },
+          {
+            "golfer": "Chris Gotterup",
+            "score": 8
+          },
+          {
+            "golfer": "Kristoffer Reitan",
+            "score": 6
+          },
+          {
+            "golfer": "Corey Conners",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "name": "Frazer",
+        "score": 36,
+        "picks": [
+          {
+            "golfer": "Matt Fitzpatrick",
+            "score": 4
+          },
+          {
+            "golfer": "Russell Henley",
+            "score": 14
+          },
+          {
+            "golfer": "Aaron Rai",
+            "score": 2
+          },
+          {
+            "golfer": "Ryo Hisatsune",
+            "score": 8
+          },
+          {
+            "golfer": "Chris Gotterup",
+            "score": 8
+          }
+        ]
+      },
+      {
+        "name": "Purkis",
+        "score": 40,
+        "picks": [
+          {
+            "golfer": "Kristoffer Reitan",
+            "score": 6
+          },
+          {
+            "golfer": "Nick Taylor",
+            "score": 5
+          },
+          {
+            "golfer": "Rory McIlroy",
+            "score": 6
+          },
+          {
+            "golfer": "Russell Henley",
+            "score": 14
+          },
+          {
+            "golfer": "Nicolai Hojgaard",
+            "score": 9
+          }
+        ]
+      },
+      {
+        "name": "Keith",
+        "score": 41,
+        "picks": [
+          {
+            "golfer": "Daniel Berger",
+            "score": 10
+          },
+          {
+            "golfer": "Brian Harman",
+            "score": 6
+          },
+          {
+            "golfer": "Cameron Young",
+            "score": 8
+          },
+          {
+            "golfer": "Collin Morikawa",
+            "score": 3
+          },
+          {
+            "golfer": "Russell Henley",
+            "score": 14
+          }
+        ]
+      }
+    ]
+  },
+  {
     "event": "PGA Championship",
     "year": 2026,
     "results": [
