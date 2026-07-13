@@ -1,10 +1,10 @@
 {
   "event": {
-    "name": "U.S. Open",
+    "name": "The Open",
     "year": 2026,
-    "subtitle": "Shinnecock Hills GC · June 18–21, 2026",
-    "espnEventId": "401811952",
-    "startDate": "2026-06-18",
+    "subtitle": "Date : Jul 16–19, 2026, 2026 Course: Royal Birkdale",
+    "espnEventId": "401811957",
+    "startDate": "2026-07-16",
     "status": "live"
   },
   "rules": {
@@ -13,29 +13,29 @@
     "cutRule": 60,
     "holePars": [
       4,
-      3,
       4,
-      4,
-      5,
       4,
       3,
-      4,
       4,
       4,
       3,
       4,
       4,
       4,
+      4,
+      3,
       4,
       5,
       3,
+      4,
+      5,
       4
     ]
   },
   "teams": [
     {
       "name": "Saunders",
-      "stars": 3,
+      "stars": 0,
       "picks": [
         "Xander Schauffele",
         "Justin Rose",
@@ -46,7 +46,7 @@
     },
     {
       "name": "Lions",
-      "stars": 4,
+      "stars": 0,
       "picks": [
         "Rory McIlroy",
         "Shane Lowry",
@@ -57,7 +57,7 @@
     },
     {
       "name": "Lecky",
-      "stars": 4,
+      "stars": 0,
       "picks": [
         "Matt Fitzpatrick",
         "Brooks Koepka",
@@ -68,7 +68,7 @@
     },
     {
       "name": "Purkis",
-      "stars": 4,
+      "stars": 0,
       "picks": [
         "Kristoffer Reitan",
         "Nick Taylor",
@@ -79,7 +79,7 @@
     },
     {
       "name": "Fletcher",
-      "stars": 4,
+      "stars": 0,
       "picks": [
         "J.J. Spaun",
         "Patrick Reed",
@@ -90,7 +90,7 @@
     },
     {
       "name": "Jack",
-      "stars": 4,
+      "stars": 0,
       "picks": [
         "Wyndham Clark",
         "Justin Rose",
@@ -101,7 +101,7 @@
     },
     {
       "name": "Frazer",
-      "stars": 5,
+      "stars": 0,
       "picks": [
         "Matt Fitzpatrick",
         "Russell Henley",
@@ -112,7 +112,7 @@
     },
     {
       "name": "Steve",
-      "stars": 3,
+      "stars": 0,
       "picks": [
         "Matt Fitzpatrick",
         "Collin Morikawa",
@@ -123,7 +123,7 @@
     },
     {
       "name": "Perry",
-      "stars": 3,
+      "stars": 0,
       "picks": [
         "Xander Schauffele",
         "J.J. Spaun",
@@ -134,7 +134,7 @@
     },
     {
       "name": "Keith",
-      "stars": 3,
+      "stars": 0,
       "picks": [
         "Daniel Berger",
         "Brian Harman",
