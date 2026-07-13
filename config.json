@@ -10,7 +10,7 @@
   "rules": {
     "budget": 40,
     "picksPerTeam": 5,
-    "cutRule": 60,
+    "cutRule": 70,
     "holePars": [
       4,
       4,
