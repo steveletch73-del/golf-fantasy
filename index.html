@@ -349,11 +349,12 @@ let HOLE_PARS = [4,4,4,4,3,4,4,3,5,4,4,4,4,3,4,5,3,4];
 let TEAMS     = [];
 let PLAYERS   = [];
 
-function oddsToPrice(odds, isFav, isOut){
-  if(isFav) return 20.0;
-  if(isOut) return 4.0;
-  const raw=130/Math.pow(odds,0.31)-1;
-  return Math.min(19.5, Math.max(4.5, Math.round(raw*2)/2));
+function oddsToPrice(odds, minOdds, maxOdds){
+  const MIN_PRICE=4.0, MAX_PRICE=18.0;
+  if(maxOdds===minOdds) return MAX_PRICE;
+  const t=(Math.log(odds)-Math.log(minOdds))/(Math.log(maxOdds)-Math.log(minOdds));
+  const raw=MAX_PRICE - t*(MAX_PRICE-MIN_PRICE);
+  return Math.round(raw*2)/2;
 }
 
 async function loadConfigAndOdds(){
@@ -373,7 +374,7 @@ async function loadConfigAndOdds(){
   const minOdds = Math.min(...oddsData.map(p=>p.odds));
   const maxOdds = Math.max(...oddsData.map(p=>p.odds));
   PLAYERS.length = 0;
-  oddsData.forEach(p=>PLAYERS.push({...p, cost:oddsToPrice(p.odds, p.odds===minOdds, p.odds===maxOdds)}));
+  oddsData.forEach(p=>PLAYERS.push({...p, cost:oddsToPrice(p.odds, minOdds, maxOdds)}));
 
   // Teams
   TEAMS.length = 0;
