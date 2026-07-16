@@ -34,14 +34,113 @@
   },
   "teams": [
     {
-      "name": "Test",
+      "name": "Saunders",
       "stars": 0,
       "picks": [
-        "Xander Schauffele",
+        "Robert MacIntyre",
+        "Sam Burns",
+        "Shane Lowry",
+        "Alex Noren",
+        "Marco Penge"
+      ]
+    },
+    {
+      "name": "Steve",
+      "stars": 0,
+      "picks": [
+        "Keegan Bradley",
+        "Sepp Straka",
+        "Shane Lowry",
+        "Robert MacIntyre",
+        "Ludvig Aberg"
+      ]
+    },
+    {
+      "name": "Frazer",
+      "stars": 0,
+      "picks": [
+        "Matt Fitzpatrick",
+        "Nicolai Hojgaard",
+        "Max Greyserman",
+        "Si Woo Kim",
+        "Ryan Fox"
+      ]
+    },
+    {
+      "name": "Purkis",
+      "stars": 0,
+      "picks": [
+        "Victor Perez",
+        "Haotong Li",
         "Justin Rose",
+        "Shane Lowry",
+        "Tyrrell Hatton"
+      ]
+    },
+    {
+      "name": "Fletcher",
+      "stars": 0,
+      "picks": [
+        "Tommy Fleetwood",
+        "Sungjae Im",
+        "Matt Wallace",
+        "Shane Lowry",
+        "Tom Kim"
+      ]
+    },
+    {
+      "name": "Lecky",
+      "stars": 0,
+      "picks": [
+        "Matt Fitzpatrick",
+        "Tom Kim",
         "Aaron Rai",
-        "Patrick Cantlay",
-        "Akshay Bhatia"
+        "Max Homa",
+        "J.T. Poston"
+      ]
+    },
+    {
+      "name": "Jack",
+      "stars": 0,
+      "picks": [
+        "Matt Fitzpatrick",
+        "Wyndham Clark",
+        "Aaron Rai",
+        "Marco Penge",
+        "Alex Smalley"
+      ]
+    },
+    {
+      "name": "Perry️",
+      "stars": 0,
+      "picks": [
+        "Matt Fitzpatrick",
+        "Patrick Reed",
+        "Eugenio Chacarra",
+        "Alex Fitzpatrick",
+        "Matt Wallace"
+      ]
+    },
+    {
+      "name": "Keith",
+      "stars": 0,
+      "picks": [
+        "Matt Fitzpatrick",
+        "Justin Rose",
+        "Sahith Theegala",
+        "Sepp Straka",
+        "Brian Harman"
+      ]
+    },
+    {
+      "name": "Lions",
+      "stars": 0,
+      "picks": [
+        "Tommy Fleetwood",
+        "Alex Fitzpatrick",
+        "Justin Rose",
+        "Marco Penge",
+        "Harry Hall"
       ]
     }
   ]
