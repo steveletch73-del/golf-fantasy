@@ -1,5 +1,271 @@
 [
   {
+    "event": "The Open",
+    "year": 2026,
+    "results": [
+      {
+        "name": "Saunders",
+        "score": -18,
+        "picks": [
+          {
+            "golfer": "Robert MacIntyre",
+            "score": -2
+          },
+          {
+            "golfer": "Sam Burns",
+            "score": -8
+          },
+          {
+            "golfer": "Shane Lowry",
+            "score": -2
+          },
+          {
+            "golfer": "Alex Noren",
+            "score": -3
+          },
+          {
+            "golfer": "Marco Penge",
+            "score": -3
+          }
+        ]
+      },
+      {
+        "name": "Fletcher",
+        "score": -11,
+        "picks": [
+          {
+            "golfer": "Tommy Fleetwood",
+            "score": -7
+          },
+          {
+            "golfer": "Sungjae Im",
+            "score": -4
+          },
+          {
+            "golfer": "Matt Wallace",
+            "score": -1
+          },
+          {
+            "golfer": "Shane Lowry",
+            "score": -2
+          },
+          {
+            "golfer": "Tom Kim",
+            "score": 3
+          }
+        ]
+      },
+      {
+        "name": "Frazer",
+        "score": -5,
+        "picks": [
+          {
+            "golfer": "Matt Fitzpatrick",
+            "score": 4
+          },
+          {
+            "golfer": "Nicolai Hojgaard",
+            "score": 2
+          },
+          {
+            "golfer": "Max Greyserman",
+            "score": 5
+          },
+          {
+            "golfer": "Si Woo Kim",
+            "score": -6
+          },
+          {
+            "golfer": "Ryan Fox",
+            "score": -10
+          }
+        ]
+      },
+      {
+        "name": "Steve",
+        "score": 2,
+        "picks": [
+          {
+            "golfer": "Keegan Bradley",
+            "score": 7
+          },
+          {
+            "golfer": "Sepp Straka",
+            "score": 4
+          },
+          {
+            "golfer": "Shane Lowry",
+            "score": -2
+          },
+          {
+            "golfer": "Robert MacIntyre",
+            "score": -2
+          },
+          {
+            "golfer": "Ludvig Aberg",
+            "score": -5
+          }
+        ]
+      },
+      {
+        "name": "Lions",
+        "score": 3,
+        "picks": [
+          {
+            "golfer": "Tommy Fleetwood",
+            "score": -7
+          },
+          {
+            "golfer": "Alex Fitzpatrick",
+            "score": 6
+          },
+          {
+            "golfer": "Justin Rose",
+            "score": 3
+          },
+          {
+            "golfer": "Marco Penge",
+            "score": -3
+          },
+          {
+            "golfer": "Harry Hall",
+            "score": 4
+          }
+        ]
+      },
+      {
+        "name": "Jack",
+        "score": 7,
+        "picks": [
+          {
+            "golfer": "Matt Fitzpatrick",
+            "score": 4
+          },
+          {
+            "golfer": "Wyndham Clark",
+            "score": 3
+          },
+          {
+            "golfer": "Aaron Rai",
+            "score": 2
+          },
+          {
+            "golfer": "Marco Penge",
+            "score": -3
+          },
+          {
+            "golfer": "Alex Smalley",
+            "score": 1
+          }
+        ]
+      },
+      {
+        "name": "Purkis",
+        "score": 8,
+        "picks": [
+          {
+            "golfer": "Victor Perez",
+            "score": -2
+          },
+          {
+            "golfer": "Haotong Li",
+            "score": 4
+          },
+          {
+            "golfer": "Justin Rose",
+            "score": 3
+          },
+          {
+            "golfer": "Shane Lowry",
+            "score": -2
+          },
+          {
+            "golfer": "Tyrrell Hatton",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "name": "Lecky",
+        "score": 9,
+        "picks": [
+          {
+            "golfer": "Matt Fitzpatrick",
+            "score": 4
+          },
+          {
+            "golfer": "Tom Kim",
+            "score": 3
+          },
+          {
+            "golfer": "Aaron Rai",
+            "score": 2
+          },
+          {
+            "golfer": "Max Homa",
+            "score": -2
+          },
+          {
+            "golfer": "J.T. Poston",
+            "score": 2
+          }
+        ]
+      },
+      {
+        "name": "Perry️",
+        "score": 9,
+        "picks": [
+          {
+            "golfer": "Matt Fitzpatrick",
+            "score": 4
+          },
+          {
+            "golfer": "Patrick Reed",
+            "score": 0
+          },
+          {
+            "golfer": "Eugenio Chacarra",
+            "score": 0
+          },
+          {
+            "golfer": "Alex Fitzpatrick",
+            "score": 6
+          },
+          {
+            "golfer": "Matt Wallace",
+            "score": -1
+          }
+        ]
+      },
+      {
+        "name": "Keith",
+        "score": 21,
+        "picks": [
+          {
+            "golfer": "Matt Fitzpatrick",
+            "score": 4
+          },
+          {
+            "golfer": "Justin Rose",
+            "score": 3
+          },
+          {
+            "golfer": "Sahith Theegala",
+            "score": 1
+          },
+          {
+            "golfer": "Sepp Straka",
+            "score": 4
+          },
+          {
+            "golfer": "Brian Harman",
+            "score": 9
+          }
+        ]
+      }
+    ]
+  },
+  {
     "event": "U.S. Open",
     "year": 2026,
     "results": [
